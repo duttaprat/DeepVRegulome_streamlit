@@ -74,7 +74,7 @@ st.sidebar.info(f"Displaying data from the {data_source} analysis pipeline.")
 
 # The 'data' folder is in the same directory as the streamlit_app.py
 base_path = f"data/{cancer_type}/" 
-tsv_files_path = f"{base_path}{analysis_type_folder}/GBM_significant/"
+tsv_files_path = f"{base_path}{analysis_type_folder}/"
 json_files_path = f"{base_path}{analysis_type_folder}/"
 
 # Get the selected file path
