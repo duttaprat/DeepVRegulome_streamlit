@@ -16,7 +16,7 @@ from decimal import Decimal, ROUND_HALF_UP
 
 st.set_page_config(
     layout="wide",
-    page_title="Predicting Variant Effect using DNABERT"
+    page_title="DeepVRegulome: Predicting Variant Impact Using DNABERT-based Finetuned Models"
 )
 # Title of the app
 st.title("DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
@@ -25,7 +25,8 @@ st.title("DeepVRegulome: DNABERT-based deep-learning framework for predicting th
 st.sidebar.header("Select Analysis Parameters")
 
 # Cancer type selection
-cancer_type = st.sidebar.selectbox("Select Cancer Type", ["Brain", "Lung", "Breast"])
+#cancer_type = st.sidebar.selectbox("Select Cancer Type", ["Brain", "Lung", "Breast"])
+cancer_type= "Brain"
 
 # Analysis type selection
 analysis_type = st.sidebar.selectbox("Genomic Regulatory Elements", ["Splice Sites", "TFBS Models"])
@@ -34,7 +35,6 @@ analysis_type = st.sidebar.selectbox("Genomic Regulatory Elements", ["Splice Sit
 # Define a mapping from the analysis type selected in the sidebar to the corresponding folder names
 analysis_type_mapping = {
     "Splice Sites": "Splice_Sites",
-    "Promoter Regions": "Promoter_region",
     "TFBS Models": "TFBS_Models"
 }
 
@@ -44,8 +44,28 @@ analysis_type_folder = analysis_type_mapping[analysis_type]
 
 
 # Data source selection
-data_source = st.sidebar.selectbox("Genomic Analysis Tools", ["CaVEMan", "sanger_raw_pindel"])
+# data_source = st.sidebar.selectbox("Genomic Analysis Tools", ["CaVEMan", "sanger_raw_pindel"])
 
+# In the sidebar
+analysis_options = {
+    "Substitutions (SNVs)": "CaVEMan",
+    "Insertions & Deletions (Indels)": "sanger_raw_pindel"
+}
+
+# Create the selectbox with user-friendly keys
+selected_analysis = st.sidebar.selectbox(
+    "Select Variant Type",
+    options=list(analysis_options.keys())
+)
+
+# Map the user's choice back to the data_source variable your code uses
+data_source = analysis_options[selected_analysis]
+
+# You can add a small helper text for more clarity
+st.sidebar.info(f"Displaying data from the {data_source} analysis pipeline.")
+
+# Now, the rest of your code can use the 'data_source' variable as it did before,
+# without any other changes needed.
 
 
 # Base paths for the files
@@ -447,7 +467,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
     ### Analysis Overview
     <p>This dashboard provides insights into the genomic variants affecting {analysis_type.lower()} in GDC {cancer_type} cancer patients, analyzed using the {data_source} Genomic Analysis Tool.
     The visualizations below display the distribution of these variants along with their predicted effects on regulatory elements based on DNABERT predictions.</p>
-    <p>In addition to variant distribution, this analysis includes <strong>clinical significance</strong> assessments based on correlations with known data from DBSNP and GWAS datasets. Survival analysis plots are also provided, offering a deeper understanding of the potential impacts of these genomic variations on patient outcomes.</p> 
+    <p>This dashboard also assesses the <strong>clinical significance</strong> of variants by correlating them with data from dbSNP and ClinVar. You can explore survival analysis plots to understand the potential impact of these variations on patient outcomes.</p> 
     """
 
 
