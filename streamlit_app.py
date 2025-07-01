@@ -625,7 +625,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
         #st.dataframe(clinical_tfbs_counts)
         
         ##getting best Accuracy
-        df_best_accuracy = pd.read_csv("/home/campus.stonybrook.edu/pdutta/Github/Postdoc/DNABERT_data_processing/TFBS/300bp_TFBS_accuracy_Stat.tsv", sep="\t")
+        df_best_accuracy = pd.read_csv("data/300bp_TFBS_accuracy_Stat.tsv", sep="\t")
         # Multiply by 100 and format to two decimal places
         df_best_accuracy[['eval_acc', 'eval_f1', 'eval_mcc']] = df_best_accuracy[['eval_acc', 'eval_f1', 'eval_mcc']].apply(lambda x: (x * 100).round(2))
         df_best_accuracy = df_best_accuracy[df_best_accuracy['eval_acc']>=85]
