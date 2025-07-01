@@ -1,0 +1,214 @@
+manifest_patient_id	case_submitter_id	project_id	cause_of_death	days_to_death	ethnicity	gender	race	vital_status	days_to_last_follow_up	primary_diagnosis	disease_type	km_time	km_status
+02eb77ff-2e07-4d56-9c32-d9fa415c7ce2	C3N-04097	CPTAC-3	'--	'--	not reported	male	asian	Alive	1098	Glioblastoma	GBM	1098	0
+033db366-1af1-4bd9-8339-c54800b1de57	C3N-04691	CPTAC-3	Unknown	257	not reported	male	white	Dead	257	Glioblastoma	GBM	257	1
+03777cdf-6779-4d23-93af-5b74fb982d7b	C3N-01367	CPTAC-3	Unknown	349	not reported	male	white	Dead	349	Glioblastoma	GBM	349	1
+038750e2-9994-4420-bfa9-a3756683ddd1	C3N-01366	CPTAC-3	Surgical Complications	6	not reported	male	white	Dead	6	Glioblastoma	GBM	6	1
+03ba06a3-5dc6-4dad-84ed-7fe3196d7402	TCGA-06-A7TK	TCGA-GBM	'--	444	not hispanic or latino	male	black or african american	Dead	164	Glioblastoma	GBM	444	1
+03bdaae4-92e0-4229-9657-94510e2c3db7	C3N-04312	CPTAC-3	Cancer Related	441	not reported	female	asian	Dead	693	Glioblastoma	GBM	441	1
+03c1c33e-c4a8-4c31-8a29-0d8b3e7bda83	C3L-06625	CPTAC-3	'--	'--	not reported	female	other	Alive	-8	Glioblastoma	GBM	-8	0
+053e38af-bce4-4e7a-84a2-f5badeb4ce7d	C3N-03757	CPTAC-3	Unknown	5	not reported	male	white	Dead	5	Glioblastoma	GBM	5	1
+0691dda3-8f8d-4677-9a79-ff91e50ce19f	C3N-04687	CPTAC-3	'--	'--	not reported	male	white	Alive	0	Glioblastoma	GBM	0	0
+0733a98f-95bd-4aa5-b908-c9cc314cfc15	C3L-03400	CPTAC-3	'--	'--	not reported	female	other	Alive	786	Glioblastoma	GBM	786	0
+07f93ac0-50e0-4c1d-b4da-898062a5b6b8	C3N-02769	CPTAC-3	Cancer Related	1115	not reported	male	asian	Dead	1115	Glioblastoma	GBM	1115	1
+09435dfd-67f9-4a28-9201-9e82d5bd04de	C3L-07202	CPTAC-3	'--	'--	not hispanic or latino	male	white	Alive	714	Glioblastoma	GBM	714	0
+09943319-e446-4462-b6a6-6e7f08af8775	C3L-02970	CPTAC-3	Cancer Related	381	not hispanic or latino	male	white	Dead	381	Glioblastoma	GBM	381	1
+09fc667c-0462-49c1-8ab6-a0ce2a80b3c9	C3N-03449	CPTAC-3	Cancer Related	179	not reported	male	white	Dead	179	Glioblastoma	GBM	179	1
+0a2dc6ea-e2bd-482f-8e17-701a75458eed	C3L-03260	CPTAC-3	Cancer Related	43	not hispanic or latino	female	white	Dead	42	Glioblastoma	GBM	43	1
+0b66e90d-56ae-4857-933f-8df4ca7a202f	C3L-04083	CPTAC-3	'--	'--	not hispanic or latino	female	white	Alive	620	Glioblastoma	GBM	620	0
+0cba3131-13e4-44db-abdc-d7c9e711137c	C3N-02788	CPTAC-3	Cancer Related	845	not reported	male	asian	Dead	845	Glioblastoma	GBM	845	1
+0ccd86e3-96fd-4cfb-b0dd-16247e0571e2	TCGA-FG-A4MU	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	326	Mixed glioma	LGG	326	0
+0d112fed-6719-4be9-bd3b-085b7e4ad26f	C3N-05039	CPTAC-3	Unknown	312	not reported	male	asian	Dead	284	Glioblastoma	GBM	312	1
+0f158d5f-16c7-4fb7-b48c-0ff392f1706b	C3L-03390	CPTAC-3	'--	'--	not reported	female	other	Alive	815	Glioblastoma	GBM	815	0
+0f396f9e-2143-4473-a4df-8f624906961a	C3N-03792	CPTAC-3	Unknown	87	not reported	male	white	Dead	87	Glioblastoma	GBM	87	1
+0fc04044-0b33-4af6-a800-01d8cda12702	C3N-03473	CPTAC-3	Cancer Related	297	not reported	female	asian	Dead	297	Glioblastoma	GBM	297	1
+12d99dd9-7d89-4964-8077-9873109a0303	TCGA-DU-A7T8	TCGA-LGG	'--	4229	not hispanic or latino	male	white	Dead	3787	Mixed glioma	LGG	4229	1
+184bba0f-b80e-41da-aef8-d54cd7193f11	C3N-05135	CPTAC-3	Unknown	323	not reported	male	asian	Dead	254	Glioblastoma	GBM	323	1
+18d154c8-cdcf-4606-ac66-099b22cfd0e8	C3N-03484	CPTAC-3	'--	'--	not reported	female	asian	Alive	1094	Glioblastoma	GBM	1094	0
+1bd7e755-4353-437a-ab8c-69e3df92824d	C3N-01816	CPTAC-3	Cancer Related	841	not reported	female	asian	Dead	841	Glioblastoma	GBM	841	1
+1bff298c-522b-465a-aa6e-8df3fd857ed3	C3N-01856	CPTAC-3	Not Cancer Related	382	not reported	male	white	Dead	382	Glioblastoma	GBM	382	1
+1cc1ee58-e45c-4d85-b163-6d097f9d8f1f	C3L-03407	CPTAC-3	Cancer Related	238	hispanic or latino	female	not reported	Dead	176	Glioblastoma	GBM	238	1
+1d3daf9d-7740-484e-850b-827a6b7d451d	C3L-01142	CPTAC-3	'--	'--	not reported	female	other	Alive	0	Glioblastoma	GBM	0	0
+218059b3-97aa-4c4e-a228-2a27a2293789	TCGA-S9-A6TV	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	571	Mixed glioma	LGG	571	0
+22653df8-0c37-4f24-8832-95dd239f49b6	C3N-03186	CPTAC-3	Cancer Related	646	not reported	female	asian	Dead	646	Glioblastoma	GBM	646	1
+230ada41-a82f-4835-9865-c762827493b5	C3N-01857	CPTAC-3	Cancer Related	651	not reported	female	white	Dead	651	Glioblastoma	GBM	651	1
+24abc004-6712-4df9-83f2-bd98dcc6ea5e	C3N-02784	CPTAC-3	Cancer Related	391	not reported	male	asian	Dead	391	Glioblastoma	GBM	391	1
+27dbf455-43fa-452c-aea6-494c65fc06af	C3L-02662	CPTAC-3	'--	'--	not reported	male	white	Alive	1384	Glioblastoma	GBM	1384	0
+2943b759-cf0c-4459-9178-f49827622f1b	C3L-06912	CPTAC-3	'--	'--	not hispanic or latino	male	white	Alive	764	Unknown	GBM	764	0
+2a14ea45-6901-488a-af43-1e6287ec8bb0	C3L-00365	CPTAC-3	Unknown	322	not hispanic or latino	female	white	Dead	280	Glioblastoma	GBM	322	1
+2c5b021f-f9e1-4a42-8755-8704f006016b	TCGA-W9-A837	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	1553	"Oligodendroglioma, NOS"	LGG	1553	0
+2c8c8efe-48eb-4b04-9bd7-9c621a887609	C3N-03935	CPTAC-3	Cancer Related	571	not reported	female	asian	Dead	571	Glioblastoma	GBM	571	1
+2c9bbb8f-4b4d-4c0e-a158-1fb0fb95aca7	C3N-01815	CPTAC-3	Unknown	121	not reported	female	asian	Dead	96	Glioblastoma	GBM	121	1
+2cfd51ad-618c-4193-81ee-52bdd92e0cc8	C3N-03755	CPTAC-3	Cancer Related	453	not reported	male	white	Dead	453	Glioblastoma	GBM	453	1
+2eb74322-a9f0-4dec-befc-b086386102a5	C3L-01049	CPTAC-3	Cancer Related	191	not reported	male	other	Dead	69	Glioblastoma	GBM	191	1
+2f48d7c8-1a93-4c71-8b96-2ea6fc7c7478	C3L-04731	CPTAC-3	'--	'--	not reported	male	white	Alive	1513	Glioblastoma	GBM	1513	0
+309343e2-1a1b-4651-a0af-118cdc8abd75	C3N-04113	CPTAC-3	Cancer Related	402	not reported	male	asian	Dead	402	Glioblastoma	GBM	402	1
+324bda04-9380-4bf8-9ebd-6f28759a5393	C3L-03266	CPTAC-3	Cancer Related	281	hispanic or latino	female	white	Dead	223	Glioblastoma	GBM	281	1
+350c00b7-9287-4fb5-a8ef-4bc9cdb19e50	C3N-03802	CPTAC-3	'--	'--	not reported	male	asian	Alive	364	Glioblastoma	GBM	364	0
+37625bad-65ff-4f12-ad62-fca2001b8425	TCGA-F6-A8O3	TCGA-LGG	'--	'--	not hispanic or latino	male	asian	Alive	7	"Oligodendroglioma, NOS"	LGG	7	0
+3824268d-4d2e-4811-9efe-906c3a37005d	C3N-03448	CPTAC-3	Cancer Related	205	not reported	female	white	Dead	205	Glioblastoma	GBM	205	1
+3a531416-d811-4dea-9507-cd6286a85a7f	C3N-03003	CPTAC-3	'--	'--	not reported	male	white	Alive	737	Glioblastoma	GBM	737	0
+3adc47fa-b27a-4df1-98ab-201ebab3c6bf	TCGA-06-A6S1	TCGA-GBM	'--	78	not hispanic or latino	female	black or african american	Dead	'--	Glioblastoma	GBM	78	1
+3adefeae-8c71-47a0-a9d5-3d0005aa0ef4	C3L-01887	CPTAC-3	Cancer Related	1703	not hispanic or latino	male	white	Dead	1622	Glioblastoma	GBM	1703	1
+3b89e48e-3e35-402f-b7f0-6e773839de4e	C3N-04094	CPTAC-3	Cancer Related	639	not reported	male	asian	Dead	639	Glioblastoma	GBM	639	1
+3ba39b13-da19-4e9f-be9f-6fb14c581651	C3L-04090	CPTAC-3	Cancer Related	423	not hispanic or latino	female	white	Dead	423	Glioblastoma	GBM	423	1
+3d9d175b-20dc-4916-afa0-95b9acbbec02	C3L-01154	CPTAC-3	Cancer Related	496	not reported	female	other	Dead	496	Glioblastoma	GBM	496	1
+3e28bc65-988d-4112-9397-7773ec79a9a9	TCGA-81-5910	TCGA-GBM	'--	49	not reported	male	white	Dead	'--	Glioblastoma	GBM	49	1
+3e40a973-7f9d-400a-8990-634196168c13	C3L-04084	CPTAC-3	Unknown	274	not hispanic or latino	female	white	Dead	206	Glioblastoma	GBM	274	1
+3ef06a77-9df6-401c-8b2b-2bfcbf6944e8	C3L-02704	CPTAC-3	'--	'--	not hispanic or latino	male	white	Alive	186	Glioblastoma	GBM	186	0
+3f11b5e7-dc63-4116-a60c-1b8c9e5f6cd2	TCGA-P5-A737	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	372	Mixed glioma	LGG	372	0
+410db725-9a2f-4df3-8ace-6eedd4988cec	TCGA-06-A7TL	TCGA-GBM	'--	'--	not hispanic or latino	female	black or african american	Alive	539	Glioblastoma	GBM	539	0
+4132ab70-457f-41a9-aae3-340f9fe109e2	C3N-04092	CPTAC-3	'--	'--	not reported	male	asian	Alive	1130	Glioblastoma	GBM	1130	0
+4193ad47-7cab-48fe-9466-aec494172f72	C3L-01045	CPTAC-3	Infection	66	not reported	female	other	Dead	0	Glioblastoma	GBM	66	1
+432e2c06-8ce1-462b-84cf-10e601601654	C3L-07611	CPTAC-3	Cancer Related	348	not hispanic or latino	female	white	Dead	348	Glioblastoma	GBM	348	1
+447a08c8-3488-45d1-9262-23c42341296f	C3L-02644	CPTAC-3	Unknown	457	not reported	female	white	Dead	390	Glioblastoma	GBM	457	1
+455fc2b4-b5da-40ba-9330-b8eed45ef66b	C3N-01515	CPTAC-3	Cancer Related	19	not hispanic or latino	female	white	Dead	19	Glioblastoma	GBM	19	1
+4905d6d3-7595-43dd-98ae-f507ebb7dff4	TCGA-P5-A735	TCGA-LGG	'--	'--	not hispanic or latino	female	white	Alive	292	"Astrocytoma, NOS"	LGG	292	0
+49718673-b69a-4d8b-a00c-b6595aa5848b	C3L-04038	CPTAC-3	Unknown	402	not reported	female	white	Dead	358	Glioblastoma	GBM	402	1
+4b38150a-2406-4f40-9f81-ee76e30f77b9	C3N-01364	CPTAC-3	'--	'--	not reported	female	white	Alive	1972	Glioblastoma	GBM	1972	0
+4b8b2d4f-7d98-47d1-a4d2-34dfa17b9c68	C3N-03797	CPTAC-3	Cancer Related	231	not reported	male	asian	Dead	231	Glioblastoma	GBM	231	1
+4e285b95-27ba-49b9-980a-6dbfc09a62c0	C3L-03744	CPTAC-3	'--	'--	not hispanic or latino	male	white	Alive	1890	Glioblastoma	GBM	1890	0
+4e8fe8a4-1788-4501-b0e0-d57b86f56e23	C3N-03480	CPTAC-3	Cancer Related	289	not reported	male	asian	Dead	289	Glioblastoma	GBM	289	1
+4eb5be8a-421e-4f46-bbdb-c8688f140f48	C3L-02465	CPTAC-3	Cancer Related	591	hispanic or latino	male	Unknown	Dead	550	Glioblastoma	GBM	591	1
+4f11a51f-c10a-4e56-b193-4e8d1cadf21c	C3L-04795	CPTAC-3	'--	'--	not reported	male	white	Alive	409	Glioblastoma	GBM	409	0
+5136de1c-084e-4165-b932-eebc4c765cc8	C3N-05114	CPTAC-3	Unknown	482	not reported	female	asian	Dead	336	Glioblastoma	GBM	482	1
+535e0e9e-9757-45b3-aafd-2b80908de134	C3N-03182	CPTAC-3	Not Cancer Related	763	not reported	male	asian	Dead	763	Glioblastoma	GBM	763	1
+5443dde1-df0d-4ddd-8a42-c9b8c17bf30c	TCGA-HW-A5KM	TCGA-LGG	'--	'--	not reported	male	white	Alive	630	"Astrocytoma, NOS"	LGG	630	0
+54d3a64c-00f6-4cc2-8263-2c84b8309371	C3L-02955	CPTAC-3	Cancer Related	378	not hispanic or latino	female	white	Dead	350	Glioblastoma	GBM	378	1
+54d621a5-8e45-4bbc-92c4-1c7f36212361	C3L-01156	CPTAC-3	Cancer Related	291	not reported	male	other	Dead	182	Glioblastoma	GBM	291	1
+5710b72b-8318-49f9-937a-f775a5c8c160	C3N-04693	CPTAC-3	Unknown	330	not reported	female	white	Dead	330	Glioblastoma	GBM	330	1
+5834fc99-c986-4023-b646-78c1613dcc71	C3N-03088	CPTAC-3	Unknown	142	not reported	female	asian	Dead	27	Glioblastoma	GBM	142	1
+5bad75c6-743c-4b7e-b822-a72befa90225	C3L-03968	CPTAC-3	'--	'--	not reported	female	white	Alive	1394	Glioblastoma	GBM	1394	0
+5c3a5246-abf8-4c2e-95a0-00d969edff44	TCGA-RR-A6KB	TCGA-GBM	'--	'--	not hispanic or latino	male	black or african american	Alive	0	Glioblastoma	GBM	0	0
+5d65b3c0-5c29-48aa-b6fb-37baf78fe409	C3N-01818	CPTAC-3	Unknown	270	not reported	male	asian	Dead	221	Glioblastoma	GBM	270	1
+5fe46057-1c78-4e85-befa-ba04610ecd10	C3N-03756	CPTAC-3	Cancer Related	290	not reported	male	white	Dead	290	Glioblastoma	GBM	290	1
+60647a7d-45c2-4b62-aa5b-8373774f14df	C3L-04362	CPTAC-3	Cancer Related	685	not reported	female	white	Dead	685	Glioblastoma	GBM	685	1
+62dd1c1f-e4c3-496f-8ca3-bedd0f7e8211	C3L-02707	CPTAC-3	'--	'--	not hispanic or latino	male	white	Alive	91	Glioblastoma	GBM	91	0
+6643318c-9d33-4434-a98a-ceefa9c5c157	C3L-04339	CPTAC-3	Cancer Related	797	not reported	male	white	Dead	752	Glioblastoma	GBM	797	1
+6650dfa0-01b8-411a-bc01-bf1cad6c111b	C3N-00661	CPTAC-3	'--	'--	not reported	male	white	Alive	1107	Glioblastoma	GBM	1107	0
+67c83385-8497-4c2d-932e-9a3b9bb90ec9	C3N-03939	CPTAC-3	Cancer Related	770	not reported	female	asian	Dead	1051	Glioblastoma	GBM	770	1
+69cd1c55-296a-4f72-9ada-b846d6c88175	TCGA-DB-A75O	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	935	"Astrocytoma, anaplastic"	LGG	935	0
+6ab2b17b-fef4-4451-b366-329f4bba3fdb	C3L-03385	CPTAC-3	Cancer Related	188	not reported	female	other	Dead	188	Glioblastoma	GBM	188	1
+6b579148-fb81-4e57-a9ff-c282a0a1b848	C3L-07213	CPTAC-3	'--	'--	not hispanic or latino	female	white	Alive	368	Glioblastoma	GBM	368	0
+6ba2bd1e-3062-4778-bd42-d26f533505ba	C3N-01849	CPTAC-3	Cancer Related	24	not reported	male	white	Dead	24	Glioblastoma	GBM	24	1
+6cb08eef-31fc-4ad7-9cc7-6176c4ea09a1	C3N-02770	CPTAC-3	Cancer Related	779	not reported	male	asian	Dead	779	Glioblastoma	GBM	779	1
+6ce0f8f2-a580-40a3-9b25-54a1ac040ac3	C3N-01798	CPTAC-3	Cancer Related	590	not reported	male	asian	Dead	590	Glioblastoma	GBM	590	1
+6e42d5ce-7b2f-40d1-82af-1b29f27b89d7	C3N-01852	CPTAC-3	'--	'--	not reported	male	white	Alive	3	Glioblastoma	GBM	3	0
+6e784527-f65d-48bc-9eb8-5f14230bb909	C3N-01518	CPTAC-3	Cancer Related	805	not reported	female	asian	Dead	805	Glioblastoma	GBM	805	1
+715eb351-d741-4dfe-95b4-6618c48ab5a9	TCGA-OX-A56R	TCGA-GBM	'--	180	not hispanic or latino	male	black or african american	Dead	'--	Glioblastoma	GBM	180	1
+756521ee-9f67-49e6-9cea-d2d933750d74	C3N-03810	CPTAC-3	Unknown	24	not reported	male	asian	Dead	24	Glioblastoma	GBM	24	1
+7577bbca-7ad7-4058-bf0e-787b38c673aa	C3L-04537	CPTAC-3	Cancer Related	456	not hispanic or latino	male	white	Dead	442	Glioblastoma	GBM	456	1
+798dfed8-b716-4958-88cf-e32a5294c4bc	C3L-03728	CPTAC-3	Cancer Related	127	not hispanic or latino	female	white	Dead	127	Glioblastoma	GBM	127	1
+7bed15a4-3b1e-487e-954d-e6b55e296dc0	C3N-03183	CPTAC-3	Cancer Related	315	not reported	male	other	Dead	315	Glioblastoma	GBM	315	1
+7d01d7c7-5138-4883-a4e3-c763151943df	C3L-01043	CPTAC-3	Cancer Related	79	not reported	male	other	Dead	1	Glioblastoma	GBM	79	1
+7d9bd465-2e99-4b07-902f-752fa348efb8	TCGA-DU-5870	TCGA-LGG	'--	'--	not hispanic or latino	female	white	Alive	5546	"Oligodendroglioma, NOS"	LGG	5546	0
+7ffc1178-c3fa-4c19-b49c-004d327df6f0	C3N-04100	CPTAC-3	'--	'--	not reported	male	asian	Alive	1093	Glioblastoma	GBM	1093	0
+812d6f3d-c4f9-4e10-9039-4ebe9b3100c3	C3N-01192	CPTAC-3	Unknown	1209	not reported	female	white	Dead	1209	Glioblastoma	GBM	1209	1
+8350a310-4c75-4f7d-b47d-1ee4d1ebab13	C3L-01232	CPTAC-3	'--	'--	not reported	female	other	Alive	744	Glioblastoma	GBM	744	0
+83ab04a3-bd1b-4ff1-b06b-a256ff8b7d03	C3L-04036	CPTAC-3	'--	'--	not reported	male	white	Alive	1391	Glioblastoma	GBM	1391	0
+852ad6d3-e66a-4063-ba70-e2a97c50fca9	C3L-02642	CPTAC-3	Cancer Related	828	not reported	male	white	Dead	828	Glioblastoma	GBM	828	1
+88c17579-6160-4429-a83a-062a5569a5d6	C3N-04683	CPTAC-3	Unknown	439	not reported	male	white	Dead	393	Glioblastoma	GBM	439	1
+890b509a-fedd-4cd3-959b-515f8ff0e7ed	C3L-00104	CPTAC-3	Unknown	129	not hispanic or latino	male	white	Dead	128	Glioblastoma	GBM	129	1
+8bac8b71-abb7-4ecc-9b61-7112fed7da15	C3L-03392	CPTAC-3	Cancer Related	147	not reported	female	other	Dead	-9	Glioblastoma	GBM	147	1
+8c749b96-8fd0-41d9-84ce-7f74e500b095	C3N-02190	CPTAC-3	Cancer Related	311	not reported	male	asian	Dead	311	Glioblastoma	GBM	311	1
+8da9bde9-4b8c-46a2-bcc2-a620a186bab3	C3L-01155	CPTAC-3	'--	'--	not reported	male	other	Alive	362	Glioblastoma	GBM	362	0
+8db95363-6eb3-4a90-affd-0c948a05c27c	C3L-00677	CPTAC-3	Cancer Related	155	not hispanic or latino	female	white	Dead	155	Glioblastoma	GBM	155	1
+90c2456b-af8b-4e31-ae86-7de05a0f4124	TCGA-76-6656	TCGA-GBM	'--	147	not hispanic or latino	male	black or african american	Dead	147	Glioblastoma	GBM	147	1
+935fb4b5-91c3-4b57-b18a-d33597f1221c	C3L-02984	CPTAC-3	'--	'--	not hispanic or latino	male	asian	Alive	1764	Glioblastoma	GBM	1764	0
+93a8fbfe-a787-4155-b6be-3b0433d8e47c	C3L-05481	CPTAC-3	'--	'--	not reported	female	other	Alive	17	Glioblastoma	GBM	17	0
+93f3f095-f6d4-40f4-845f-fb313af513a0	C3L-04085	CPTAC-3	Cancer Related	267	not hispanic or latino	male	white	Dead	267	Glioblastoma	GBM	267	1
+948b350f-fc72-4694-9c71-b67e71f57351	C3N-04098	CPTAC-3	Cancer Related	440	not reported	female	asian	Dead	440	Glioblastoma	GBM	440	1
+9555409b-2f6c-4d24-9b39-5b8183cb3f8c	C3N-00665	CPTAC-3	'--	'--	not reported	female	white	Alive	1585	Glioblastoma	GBM	1585	0
+959b7cb2-b128-42de-8558-fe7d3eca74fd	C3N-02256	CPTAC-3	Cancer Related	263	not reported	male	white	Dead	188	Glioblastoma	GBM	263	1
+96a823e7-9a5c-4a58-a424-a051cf4f4b29	C3N-03796	CPTAC-3	'--	'--	not reported	male	asian	Alive	730	Glioblastoma	GBM	730	0
+97121631-b6cd-4f6f-9dfb-1c3a668150e2	C3L-02504	CPTAC-3	Cancer Related	873	not hispanic or latino	male	white	Dead	866	Glioblastoma	GBM	873	1
+9935a376-e6a7-461b-a479-4f312f0601eb	C3L-02041	CPTAC-3	'--	'--	not hispanic or latino	female	white	Alive	1030	Glioblastoma	GBM	1030	0
+9a2beddf-39e1-4ed9-8654-2ebad59e71d3	TCGA-DU-6395	TCGA-LGG	'--	1491	not hispanic or latino	male	white	Dead	'--	Mixed glioma	LGG	1491	1
+9a3edc2a-0eb3-4d88-965d-2801cd19df51	C3N-01196	CPTAC-3	Cancer Related	653	not reported	male	white	Dead	230	Glioblastoma	GBM	653	1
+9a81060d-2b6d-4a97-a131-a5cf6c4c3ee4	C3N-03180	CPTAC-3	Cancer Related	511	not reported	male	asian	Dead	511	Glioblastoma	GBM	511	1
+9b51bdd3-0ec9-42ca-9a09-a978bcef3ab0	C3N-02255	CPTAC-3	Cancer Related	265	not reported	male	white	Dead	265	Glioblastoma	GBM	265	1
+9b7a2f48-e658-41b9-9d4a-68d83082cc29	C3L-03727	CPTAC-3	Cancer Related	721	not hispanic or latino	female	white	Dead	613	Glioblastoma	GBM	721	1
+9c9fa09e-4db1-4f42-b64b-7c7302b81c29	C3L-05239	CPTAC-3	'--	'--	not reported	male	white	Alive	395	Glioblastoma	GBM	395	0
+9e35e7c1-b8e9-441b-9520-3195359f8e43	C3L-01040	CPTAC-3	'--	'--	not reported	male	other	Alive	608	Glioblastoma	GBM	608	0
+9e8410d9-8f6a-4b99-878e-702e4e59021d	TCGA-FG-A4MY	TCGA-LGG	'--	'--	hispanic or latino	female	white	Alive	721	Mixed glioma	LGG	721	0
+9f7f9c66-39bb-48b1-ae8e-91acc8028425	C3L-01046	CPTAC-3	Cancer Related	349	not reported	male	other	Dead	195	Glioblastoma	GBM	349	1
+a08a494c-e685-4f80-981f-68a0d19b9a38	C3N-03001	CPTAC-3	Cancer Related	534	not reported	female	white	Dead	534	Glioblastoma	GBM	534	1
+a55817f2-61f8-43f3-a017-7585f5f29121	TCGA-DB-A64P	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	916	"Oligodendroglioma, anaplastic"	LGG	916	0
+a5867fd1-4897-4559-855a-c30002d3c6bb	C3N-03452	CPTAC-3	Unknown	59	not reported	male	white	Dead	59	Glioblastoma	GBM	59	1
+a58b5cd5-4625-4070-b672-4eb92cd7775c	C3N-03788	CPTAC-3	'--	'--	not reported	female	white	Alive	15	"Oligodendroglioma, anaplastic"	GBM	15	0
+a5dba504-f9af-4ad7-8dd2-4d719440b569	C3N-05991	CPTAC-3	Unknown	460	not reported	male	asian	Dead	292	Glioblastoma	GBM	460	1
+a6302a12-8657-44b4-95c1-3fbeb0cf9bf1	TCGA-E1-A7YI	TCGA-LGG	'--	111	not hispanic or latino	female	white	Dead	'--	"Astrocytoma, anaplastic"	LGG	111	1
+a732538e-135a-43dc-a88b-b122a1a36749	C3N-02785	CPTAC-3	Cancer Related	546	not reported	male	asian	Dead	546	Glioblastoma	GBM	546	1
+a97e1e32-967f-4275-ac62-6ff478e82973	C3L-04081	CPTAC-3	Cancer Related	287	not hispanic or latino	male	white	Dead	287	Glioblastoma	GBM	287	1
+aae9d68e-f0eb-486b-9520-0b9f547f1ad3	C3N-02186	CPTAC-3	'--	'--	not reported	male	asian	Alive	264	Glioblastoma	GBM	264	0
+af56a9e4-b896-4d47-b9c0-930eb68862bd	C3N-02681	CPTAC-3	Unknown	1009	not reported	female	white	Dead	1009	Glioblastoma	GBM	1009	1
+af63b73a-b8aa-4a3e-8d82-9fd0f130e942	C3N-01334	CPTAC-3	Cancer Related	7	not reported	female	white	Dead	7	Glioblastoma	GBM	7	1
+b01b9f70-fc7d-43d1-bc8a-6c435ffd3705	C3N-02786	CPTAC-3	'--	'--	not reported	female	asian	Alive	1047	Glioblastoma	GBM	1047	0
+b0218338-6d83-491f-b51d-844d209f54b3	C3N-02788	CPTAC-3	Cancer Related	845	not reported	male	asian	Dead	845	Glioblastoma	GBM	845	1
+b0a32ca7-5793-4f50-97f8-8adf5254a205	C3L-02705	CPTAC-3	Cancer Related	111	not hispanic or latino	male	white	Dead	104	Glioblastoma	GBM	111	1
+b20bcb30-fa83-4da4-85f7-e55efefd6ea1	C3N-01369	CPTAC-3	Unknown	606	not reported	female	white	Dead	606	Glioblastoma	GBM	606	1
+b2a6ca3f-883f-4f40-81e3-b246708169e7	TCGA-P5-A77X	TCGA-LGG	'--	'--	not hispanic or latino	female	white	Alive	105	Mixed glioma	LGG	105	0
+b2eaaa93-e870-4b1c-a835-b1d932c75b88	TCGA-41-6646	TCGA-GBM	'--	379	not hispanic or latino	female	white	Dead	236	Glioblastoma	GBM	379	1
+b2fdc5e6-fcac-4ffa-8287-111d9bae30e0	C3N-02599	CPTAC-3	Unknown	407	not reported	male	white	Dead	407	Glioblastoma	GBM	407	1
+b330f405-d765-4b01-ab1b-4c9a396f6c2b	C3N-03789	CPTAC-3	Cancer Related	310	not reported	male	white	Dead	275	Glioblastoma	GBM	310	1
+b38d4d3c-9994-41fe-8559-46ad3c339d9e	C3L-01327	CPTAC-3	Cancer Related	646	not hispanic or latino	male	white	Dead	2	Glioblastoma	GBM	646	1
+b4b13f9e-a571-43dd-86d7-6c01601ca3a8	C3N-02683	CPTAC-3	Cancer Related	102	not reported	male	white	Dead	102	Glioblastoma	GBM	102	1
+b5b88df3-ba1e-48a9-b45f-7ac4d282ad76	TCGA-VM-A8CF	TCGA-LGG	'--	'--	not reported	female	white	Alive	609	"Astrocytoma, anaplastic"	LGG	609	0
+b5d89740-5891-4229-b002-9ccb43ddb270	C3N-02259	CPTAC-3	Cancer Related	181	not reported	female	white	Dead	181	Glioblastoma	GBM	181	1
+b5fb53b7-7a70-48a2-84ff-ca6ebe62d053	C3N-02782	CPTAC-3	'--	'--	not reported	female	asian	Alive	1339	Glioblastoma	GBM	1339	0
+b7416dd2-f9ef-4fdc-8dd3-5e9b9e7169a3	C3L-01048	CPTAC-3	'--	'--	not reported	male	other	Alive	806	Glioblastoma	GBM	806	0
+b78b66b2-2983-4965-99ff-8a7e45a07d8f	TCGA-4W-AA9T	TCGA-GBM	'--	'--	not hispanic or latino	female	black or african american	Alive	778	Glioblastoma	GBM	778	0
+b845bff2-f0eb-4375-95f0-0ebecab03c29	C3L-03387	CPTAC-3	Cancer Related	403	not reported	male	other	Dead	403	Glioblastoma	GBM	403	1
+bb91fbd6-7e62-4a15-9e60-3d95e26f4aec	C3L-03372	CPTAC-3	'--	'--	not reported	male	other	Alive	359	Glioblastoma	GBM	359	0
+bce00d1a-9598-4fef-8e21-da2c5290d906	C3N-03188	CPTAC-3	Cancer Related	1022	not reported	male	asian	Dead	1022	Glioblastoma	GBM	1022	1
+bda972d3-48e6-4781-8692-a3effd0aa91c	C3N-04695	CPTAC-3	Unknown	199	not reported	male	white	Dead	199	Glioblastoma	GBM	199	1
+bf01253b-df8a-4e9d-afe1-21a4b0cf777e	C3N-03791	CPTAC-3	Unknown	75	not reported	female	white	Dead	75	Glioblastoma	GBM	75	1
+c12f0212-31ee-4aa2-88c4-d29c7c9059cb	C3N-02783	CPTAC-3	'--	'--	not reported	female	asian	Alive	1416	Glioblastoma	GBM	1416	0
+c6b9e176-a36b-4eb2-aa15-6a0155c1aeb5	C3N-03453	CPTAC-3	Unknown	'--	not reported	female	white	Dead	'--	Glioblastoma	GBM		1
+c844a8f1-9588-4e70-a89c-12014aeef8a7	TCGA-P5-A5F1	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	179	"Astrocytoma, NOS"	LGG	179	0
+c9a63b40-b4c3-44ca-8a8c-eb42a538438d	TCGA-DB-A75K	TCGA-LGG	'--	'--	not hispanic or latino	female	white	Alive	368	Mixed glioma	LGG	368	0
+ca52ea0e-5021-463b-8821-5e7c765812ff	TCGA-4W-AA9S	TCGA-GBM	'--	'--	not hispanic or latino	male	black or african american	Alive	44	Glioblastoma	GBM	44	0
+cb2bb421-2b7c-4c1c-9020-4e7012b3fc2c	TCGA-TQ-A8XE	TCGA-LGG	'--	954	hispanic or latino	female	white	Dead	'--	"Oligodendroglioma, NOS"	LGG	954	1
+cb50a28d-47d9-4b34-9515-9dfd7a03ac14	C3L-03735	CPTAC-3	'--	'--	hispanic or latino	male	white	Dead	1315	Glioblastoma	GBM		1
+cc884f4d-e62d-4214-bfaa-81052a02a246	C3L-01149	CPTAC-3	'--	'--	not reported	male	other	Alive	666	Glioblastoma	GBM	666	0
+ce08aa4a-de2d-44f3-88ed-84313aa294af	TCGA-DB-5274	TCGA-LGG	'--	'--	not hispanic or latino	female	white	Alive	2289	Mixed glioma	LGG	2289	0
+cf565879-9f53-4fd1-b0da-065869293342	C3N-03070	CPTAC-3	'--	'--	not reported	female	asian	Alive	332	Glioblastoma	GBM	332	0
+cfecd6d7-930a-40f1-8161-f2b4a37dc9fb	C3N-02188	CPTAC-3	Cancer Related	411	not reported	male	asian	Dead	411	Glioblastoma	GBM	411	1
+d101eddd-ad00-4a42-9a95-ece5bd2332a2	C3N-01814	CPTAC-3	'--	'--	not reported	female	asian	Alive	383	Glioblastoma	GBM	383	0
+d214490c-9f1c-4228-8cbc-7c8238942041	C3N-01505	CPTAC-3	Not Cancer Related	192	not hispanic or latino	male	white	Dead	192	Glioblastoma	GBM	192	1
+d36bdeac-1edf-4599-ac3d-b42811ec5b18	C3N-01517	CPTAC-3	Cancer Related	1105	not reported	male	asian	Dead	1144	Glioblastoma	GBM	1105	1
+d481a290-6b89-442b-b5f3-c855e34bb3ca	C3N-03800	CPTAC-3	Cancer Related	799	not reported	male	asian	Dead	1094	Glioblastoma	GBM	799	1
+d6cb373e-d9bc-43a1-8edc-2199b38b95f7	C3L-01061	CPTAC-3	'--	'--	not reported	male	other	Alive	840	Glioblastoma	GBM	840	0
+d716a0ce-10ef-4c47-912a-9ba374898ffe	C3L-04539	CPTAC-3	Cancer Related	409	not hispanic or latino	male	white	Dead	282	Glioblastoma	GBM	409	1
+d770cba7-f4ec-437d-833b-b7d8af1cbe34	C3L-04392	CPTAC-3	'--	'--	not hispanic or latino	male	white	Alive	190	Glioblastoma	GBM	190	0
+da5fbf8f-862d-49a6-8119-86f508063e29	C3L-01146	CPTAC-3	Cancer Related	509	not reported	male	other	Dead	508	Glioblastoma	GBM	509	1
+db856976-cd46-494d-bdc8-b4f3608cf10d	C3N-01199	CPTAC-3	'--	'--	not reported	male	white	Dead	'--	"Oligodendroglioma, NOS"	GBM		1
+dc3f72c3-79b4-411c-8275-a85e9d081abb	C3N-01851	CPTAC-3	Cancer Related	363	not reported	male	white	Dead	363	Glioblastoma	GBM	363	1
+dd045b58-4d6a-4404-a412-6aa9e99e282e	C3L-02542	CPTAC-3	Cancer Related	180	hispanic or latino	female	white	Dead	154	Glioblastoma	GBM	180	1
+dd9fc4a4-afd5-4fc8-8a76-5b341c38ecba	C3N-03025	CPTAC-3	Unknown	110	not reported	male	white	Dead	110	Glioblastoma	GBM	110	1
+e28e9e35-1eba-4eb9-998f-ac7b9eb3f6ca	C3N-02682	CPTAC-3	Cancer Related	109	not reported	male	white	Dead	109	Glioblastoma	GBM	109	1
+e2beccb1-840b-4e6a-84e5-b07e25289593	TCGA-DU-6407	TCGA-LGG	'--	2875	not hispanic or latino	female	white	Dead	'--	"Oligodendroglioma, NOS"	LGG	2875	1
+e2e8315f-21fa-4476-8e28-1d625649d3ca	TCGA-P5-A72W	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	317	"Astrocytoma, anaplastic"	LGG	317	0
+e40fc3cf-2691-47df-a5f3-87e5bbcd9a50	C3L-04359	CPTAC-3	'--	'--	not reported	male	white	Alive	439	Glioblastoma	GBM	439	0
+e420f20d-792a-4ea1-92cf-995cbcbc91b7	C3L-03733	CPTAC-3	Cancer Related	48	not hispanic or latino	male	white	Dead	37	Glioblastoma	GBM	48	1
+e4330135-7dbe-42c2-998d-387c2f5a229a	C3L-00674	CPTAC-3	Cancer Related	478	not hispanic or latino	male	white	Dead	385	Glioblastoma	GBM	478	1
+e570a351-99be-4019-9eae-4bda80014c63	C3N-04686	CPTAC-3	Cancer Related	385	not reported	male	white	Dead	385	Glioblastoma	GBM	385	1
+e5bd9afb-3fbd-4688-a376-795a51fd5079	C3L-01157	CPTAC-3	Not Cancer Related	984	not reported	female	other	Dead	984	Glioblastoma	GBM	984	1
+eae40e36-26ef-45da-800c-310d5d81d6f0	TCGA-P5-A72X	TCGA-LGG	'--	'--	not hispanic or latino	male	white	Alive	403	"Astrocytoma, anaplastic"	LGG	403	0
+eef24407-c46d-45c3-9934-86902ac3ceac	C3N-02185	CPTAC-3	'--	'--	not reported	female	other	Alive	386	Glioblastoma	GBM	386	0
+ef6c3ecc-0bb6-4035-9c45-57740f5bcaa1	TCGA-06-A6S0	TCGA-GBM	'--	95	not hispanic or latino	male	black or african american	Dead	'--	Glioblastoma	GBM	95	1
+f00eed55-0ad9-41e8-bdf2-144b43f9b9b8	C3N-02181	CPTAC-3	'--	'--	not reported	female	asian	Alive	388	Glioblastoma	GBM	388	0
+f02e7e02-eb4c-429c-b5c4-6143b1cf4d75	C3L-04213	CPTAC-3	'--	'--	not reported	female	white	Alive	1450	Glioblastoma	GBM	1450	0
+f076e644-bc06-4a93-8754-785d2c33371e	C3L-03748	CPTAC-3	Cancer Related	401	not hispanic or latino	female	white	Dead	397	Glioblastoma	GBM	401	1
+f15d872a-7e31-4111-9d92-5ac813a8bc4f	C3L-02708	CPTAC-3	Cancer Related	738	not hispanic or latino	male	white	Dead	738	Glioblastoma	GBM	738	1
+f277dc80-abac-41d1-a23f-460da23b2555	C3L-04082	CPTAC-3	Cancer Related	121	not hispanic or latino	female	black or african american	Dead	121	Glioblastoma	GBM	121	1
+f2851c73-3fa8-455f-9dc1-128ff4f1bc41	C3N-01368	CPTAC-3	Unknown	245	not reported	male	white	Dead	245	Glioblastoma	GBM	245	1
+f2a6974c-658d-4da7-a8dc-bd0d4a7a19e4	C3N-00663	CPTAC-3	Surgical Complications	1	not reported	male	white	Dead	1	Glioblastoma	GBM	1	1
+f37e99f6-0108-48da-b8bb-b041394bf194	C3N-02286	CPTAC-3	'--	'--	not reported	male	white	Alive	245	Glioblastoma	GBM	245	0
+f3ad237d-b424-4ca4-9659-2ff88a42e584	C3N-02183	CPTAC-3	Cancer Related	340	not reported	female	asian	Dead	340	Glioblastoma	GBM	340	1
+f45d1f3c-c34f-4def-bb78-03d6fc3cc6fc	TCGA-06-A5U0	TCGA-GBM	'--	'--	not hispanic or latino	female	black or african american	Alive	815	Glioblastoma	GBM	815	0
+f701f323-9730-49f0-bbba-37a2f7566282	C3L-02900	CPTAC-3	Cancer Related	1053	not hispanic or latino	male	white	Dead	1053	Glioblastoma	GBM	1053	1
+f8b8e0df-4234-4839-b0ee-34a2c9ef4985	C3N-03184	CPTAC-3	'--	'--	not reported	male	asian	Alive	390	Glioblastoma	GBM	390	0
+f90f1702-d5f1-43f4-b167-2c440f941bf6	C3L-03740	CPTAC-3	Cancer Related	86	not hispanic or latino	male	white	Dead	84	Glioblastoma	GBM	86	1
+f9554b80-de24-4930-b651-7b2ae3b4ba8c	C3N-00662	CPTAC-3	Infection	116	not reported	female	white	Dead	116	Glioblastoma	GBM	116	1
+fd27f3fc-6f0b-4794-8555-3111ad520493	C3L-03405	CPTAC-3	"Cardiovascular Disorder, NOS"	87	not reported	male	other	Dead	87	Glioblastoma	GBM	87	1
+fdfbb80c-8e66-499a-ac59-f311d6f4b6fa	C3L-03681	CPTAC-3	Not Cancer Related	7	not hispanic or latino	female	white	Dead	7	Glioblastoma	GBM	7	1

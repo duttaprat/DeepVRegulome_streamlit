@@ -22,7 +22,7 @@ st.set_page_config(
 st.title("DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
 
 # Subtitle right below the main title
-st.subheader("A DNABERT-based framework for predicting the functional impact of genomic variants on the human regulome.")
+#st.subheader("A DNABERT-based framework for predicting the functional impact of genomic variants on the human regulome.")
 
 # Sidebar for selecting analysis parameters
 st.sidebar.header("Select Analysis Parameters")
@@ -71,16 +71,15 @@ st.sidebar.info(f"Displaying data from the {data_source} analysis pipeline.")
 # without any other changes needed.
 
 
-# Base paths for the files
-base_path = "/data/private/pdutta_new/GDC_Cancer_Wise/New_data/Brain/Generated_files/Postprocessed_files/"
+
+# The 'data' folder is in the same directory as the streamlit_app.py
+base_path = f"data/{cancer_type}/" 
 tsv_files_path = f"{base_path}{analysis_type_folder}/GBM_significant/"
 json_files_path = f"{base_path}{analysis_type_folder}/"
 
+# Get the selected file path
+clinical_file_path = f"{base_path}patient_clinical_updated.tsv"
 
-
-
-# # Get the selected file path
-clinical_file_path = f"/data/private/pdutta_new/GDC_Cancer_Wise/New_data/{cancer_type}/Generated_files/Postprocessed_files/patient_clinical_updated.tsv"
 
 def compute_common_patients(group):
     # Extract 'GBM_patient_ids' and convert them to sets
