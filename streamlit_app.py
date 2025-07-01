@@ -19,7 +19,7 @@ st.set_page_config(
     page_title="Predicting Variant Effect using DNABERT"
 )
 # Title of the app
-st.title("Predicting Genomic Variant Effect on Regulatory Elements using DNABERT for GDC Cancer Patients")
+st.title("DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
 
 # Sidebar for selecting analysis parameters
 st.sidebar.header("Select Analysis Parameters")
