@@ -21,6 +21,9 @@ st.set_page_config(
 # Title of the app
 st.title("DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
 
+# Subtitle right below the main title
+st.subheader("A DNABERT-based framework for predicting the functional impact of genomic variants on the human regulome.")
+
 # Sidebar for selecting analysis parameters
 st.sidebar.header("Select Analysis Parameters")
 
