@@ -1343,6 +1343,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
             group_A = df_clinical[(df_clinical['group'] == 'A') & (df_clinical['disease_type'] == "GBM")]
             group_B = df_clinical[(df_clinical['group'] == 'B') & (df_clinical['disease_type'] == "GBM")]
             logrank_p_value=selected_rows.iloc[0]['logrank_p_value']
+            st.write(group_A, group_B, selected_rows, logrank_p_value)
             fig4 =  plot_km_curve(group_A, group_B, idx=None, title=f"KM Plot for GBM Brain Cancer Patients with Variant {variant_info}", logrank_p_value=logrank_p_value)
             fig4.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
             st.plotly_chart(fig4)  
