@@ -125,6 +125,8 @@ def calculate_p_values(df_kmf, df_transcript_info):
 
         group_A = df_kmf[df_kmf['group'] == 'A']
         group_B = df_kmf[df_kmf['group'] == 'B']
+        st.dataframe(group_A)
+        st.dataframe(group_B)
 
         if len(group_A) > 1 and len(group_B) > 1:  # Ensure there are enough data points for analysis
             # Perform log-rank test
