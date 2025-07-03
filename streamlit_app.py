@@ -103,8 +103,6 @@ def compute_common_patients(group):
 def calculate_p_values(df_kmf, df_transcript_info):
     kmf = KaplanMeierFitter()
     cph = CoxPHFitter(penalizer=0.1)  # Adding a penalizer
-    st.dataframe(df_kmf)
-    st.dataframe(df_transcript_info)
     # Add new columns to df_transcript_info to store results
     df_transcript_info['logrank_p_value'] = None
     df_transcript_info['coxph_p_value'] = None
@@ -119,15 +117,12 @@ def calculate_p_values(df_kmf, df_transcript_info):
             lambda row: f"{row['chromosome']}:{row['variant_start_position']}:{row['ref_nucleotide']}>{row['alternative_nucleotide']}",
             axis=1
         )
-        st.write("KJBKJBKJB", selected_patients, selected_patients_ids)
         df_kmf["group"] = df_kmf.apply(lambda r: "B" if r['manifest_patient_id'] in selected_patients_ids else "A", axis=1)
         df_kmf["group_numeric"] = df_kmf["group"].apply(lambda x: 1 if x == "B" else 0)
 
         group_A = df_kmf[df_kmf['group'] == 'A']
         group_B = df_kmf[df_kmf['group'] == 'B']
-        st.write("TKJBKJ")
-        st.dataframe(group_A)
-        st.dataframe(group_B)
+
 
         if len(group_A) > 1 and len(group_B) > 1:  # Ensure there are enough data points for analysis
             # Perform log-rank test
@@ -1297,36 +1292,6 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
             )
             fig3.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
 
-            
-#             df_counts = df_clinical.groupby(['group', 'primary_diagnosis']).size().reset_index(name='count')
-#             fig5 = px.bar(df_counts, x='group', y='count', color='primary_diagnosis', title='Primary Diagnosis Distribution by Group', 
-#                           color_discrete_sequence=px.colors.qualitative.Set2)
-#             fig5.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
-
-#             df_counts = df_clinical.groupby(['group', 'disease_type']).size().reset_index(name='count')
-#             st.dataframe(df_counts)
-#             fig6 = px.bar(df_counts, x='group', y='count', color='disease_type', title='Disease Type Distribution by Group', 
-#                           color_discrete_sequence=px.colors.qualitative.Set2)
-#             fig6.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
-            
-            
-            
-           
-            
-            
-            
-            
-            
-#             group_A = df_clinical[(df_clinical['group'] == 'A') & (df_clinical['disease_type'] == "GBM")]
-#             group_B = df_clinical[(df_clinical['group'] == 'B') & (df_clinical['disease_type'] == "LGG")]
-#             fig7 =  plot_km_curve(group_A, group_B, title=f"LGG Patients(Group-B) Harboring Variant {variant_info} vs. GBM Patients(Group-A) Lacking the Variant.")
-#             fig7.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
-            
-#             group_A = df_clinical[(df_clinical['group'] == 'A') & (df_clinical['disease_type'] == "LGG")]
-#             group_B = df_clinical[(df_clinical['group'] == 'B') & (df_clinical['disease_type'] == "GBM")]
-#             fig8 =  plot_km_curve(group_A, group_B, title=f"GBM Patients(Group-B) Harboring Variant {variant_info} vs. LGG Patients(Group-A) Lacking the Variant.")
-#             fig8.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
-            
             # Title centered
             st.markdown("<h3 style='text-align: center;'>Visualization of Clinical Data Stratification by Cohorts</h3>", unsafe_allow_html=True)
 
@@ -1351,209 +1316,14 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
             group_A = df_clinical[(df_clinical['group'] == 'A') & (df_clinical['disease_type'] == "GBM")]
             group_B = df_clinical[(df_clinical['group'] == 'B') & (df_clinical['disease_type'] == "GBM")]
             logrank_p_value=selected_rows.iloc[0]['logrank_p_value']
-            st.write(group_A, group_B, selected_rows, logrank_p_value)
             fig4 =  plot_km_curve(group_A, group_B, idx=None, title=f"KM Plot for GBM Brain Cancer Patients with Variant {variant_info}", logrank_p_value=logrank_p_value)
             fig4.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
             st.plotly_chart(fig4)  
             #fig4.update_layout(title={'x': 0.5, 'xanchor': 'center', 'yanchor': 'top', 'font': {'size': 14}})
 
-
-                
-            
-#             st.markdown("<h3 style='text-align: center;'>Survival Plot of Mortality Risk in Different Brain Cancer Patients.</h3>", unsafe_allow_html=True)
-#             col1, col2 = st.columns(2)
-
-#             with col1:
-#                 st.plotly_chart(fig7)  # First Kaplan-Meier plot
-
-#             with col2:
-#                 st.plotly_chart(fig8)  # Second Kaplan-Meier plot
-            
-
-
-            
-
-            
-            ####################################################################################################################################################################
-            
-    
-            # group_A = df_clinical[df_clinical['group'] == 'A']
-            # group_B = df_clinical[df_clinical['group'] == 'B']
-            # plot_km_curve(group_A, group_B, title=variant_info, logrank_p_value=selected_rows.iloc[0]['logrank_p_value'])
-
-
-        #return group_A, group_B, selected_variant_data['variant_information'], selected_variant_data['logrank_p_value']
-
-#         # Handle the selection
-#         if selected_rows:  # Ensure there are selected rows
-#             st.write("Selected Variant Information:", selected_rows[0])  # Debugging selected variant
-#             selected_variant = selected_rows[0]['variant_information']
-#             st.session_state['variant_clicked'] = selected_variant
-
-#         # Generate KM plot if a variant is clicked
-#         if 'variant_clicked' in st.session_state and st.session_state['variant_clicked']:
-#             st.write("Generating KM plot for variant:", st.session_state['variant_clicked'])  # Debugging KM plot generation
-#             group_A, group_B, variant_information, logrank_p_value = get_km_plot_data(st.session_state['variant_clicked'])
-#             plot_km_curve(group_A, group_B, idx=None, title=variant_information, logrank_p_value=logrank_p_value)
-
-
-
-        # Function to generate KM plot on clicking a variant
-#         @st.cache_data
-#         def get_km_plot_data(variant_info):
-#             selected_variant_data = df_transcript_info[df_transcript_info['variant_information'] == variant_info].iloc[0]
-#             selected_patients_ids = [pid.split('_')[0] for pid in selected_variant_data['patient_ids'].split(',')]
-#             selected_patients = df_clinical[df_clinical['manifest_patient_id'].isin(selected_patients_ids)]
-#             df_clinical["group"] = df_clinical.apply(lambda r: "B" if r['manifest_patient_id'] in selected_patients_ids else "A", axis=1)
-#             df_clinical["group_numeric"] = df_clinical["group"].apply(lambda x: 1 if x == "B" else 0)
-#             group_A = df_clinical[df_clinical['group'] == 'A']
-#             group_B = df_clinical[df_clinical['group'] == 'B']
-#             return group_A, group_B, selected_variant_data['variant_information'], selected_variant_data['logrank_p_value']
-
-#         # Handle button clicks
-#         if 'variant_clicked' not in st.session_state:
-#             st.session_state['variant_clicked'] = None
-
-#         for idx, row in df_transcript_info.iterrows():
-#             if st.button(f'Show Plot: {row["variant_information"]}', key=row["variant_information"]):
-#                 st.session_state['variant_clicked'] = row['variant_information']
-                
-
-#         if st.session_state['variant_clicked']:
-#             group_A, group_B, variant_information, logrank_p_value = get_km_plot_data(st.session_state['variant_clicked'])
-#             plot_km_curve(group_A, group_B, idx=None, title=variant_information, logrank_p_value=logrank_p_value)
-        
-
-      
-
-        # Display the table
-        #st.plotly_chart(fig)
-
-
-        
-        
 else:
     st.write("Failed to load data. Please check the file path and format.")
     
     
     
-    
-# def calculate_p_values(df_kmf, df_transcript_info):
-#     kmf = KaplanMeierFitter()
-#     cph = CoxPHFitter(penalizer=0.1)  # Adding a penalizer
-
-#     # Add new columns to df_transcript_info to store results
-#     df_transcript_info['logrank_p_value'] = None
-#     df_transcript_info['coxph_p_value'] = None
-#     df_transcript_info['concordance_index'] = None
-#     df_transcript_info['hazard_ratio'] = None
-#     df_transcript_info['variant_information'] = None
-#     df_transcript_info['Disease_type Chi-square Statistics'] = None
-#     df_transcript_info['Disease_type Chi-square p-value'] = None
-
-#     for idx, row in df_transcript_info.iterrows():
-#         selected_patients_ids = [pid.split('_')[0] for pid in row['patient_ids'].split(',')]
-#         selected_patients = df_kmf[df_kmf['manifest_patient_id'].isin(selected_patients_ids)]
-#         df_transcript_info['variant_information'] = df_transcript_info.apply(
-#             lambda row: f"{row['chromosome']}:{row['variant_start_position']}:{row['ref_nucleotide']}>{row['alternative_nucleotide']}",
-#             axis=1
-#         )
-
-#         df_kmf["group"] = df_kmf.apply(lambda r: "B" if r['manifest_patient_id'] in selected_patients_ids else "A", axis=1)
-#         df_kmf["group_numeric"] = df_kmf["group"].apply(lambda x: 1 if x == "B" else 0)
-#         group_A = df_kmf[df_kmf['group'] == 'A']
-#         group_B = df_kmf[df_kmf['group'] == 'B']
-        
-#         # Create a contingency table
-#         contingency_table = pd.crosstab(df_kmf['group'], df_kmf['disease_type'])
-#         # Perform Chi-square test
-#         chi2, p, dof, ex = stats.chi2_contingency(contingency_table)
-#         df_transcript_info.at[idx, 'Disease_type Chi-square Statistics'] = chi2
-#         df_transcript_info.at[idx, 'Disease_type Chi-square p-value'] = p
-
-#         if len(group_A) > 1 and len(group_B) > 1:  # Ensure there are enough data points for analysis
-            
-            
-#             # Perform log-rank test
-#             results_logrank = logrank_test(group_A['km_time'], group_B['km_time'], event_observed_A=group_A['km_status'], event_observed_B=group_B['km_status'])
-#             logrank_p_value = results_logrank.p_value
-
-#             # Fit Cox Proportional Hazards model
-#             df_kmf_clean = df_kmf[['manifest_patient_id', 'project_id', 'group', 'group_numeric', 'km_time', 'km_status']].dropna()
-
-#             # Diagnostic check for variance
-#             events = df_kmf_clean['km_status'].astype(bool)
-
-#             try:
-#                 cph.fit(df_kmf_clean, duration_col='km_time', event_col='km_status', formula='group_numeric')
-                
-#                 coxph_p_value = cph.summary.loc['group_numeric', 'p']
-#                 hazard_ratio = cph.summary.loc['group_numeric', 'exp(coef)']
-#                 concordance_index = cph.concordance_index_
-
-#                 # Store the results in the transcript info DataFrame
-#                 df_transcript_info.at[idx, 'logrank_p_value'] = logrank_p_value
-#                 df_transcript_info.at[idx, 'coxph_p_value'] = coxph_p_value
-#                 df_transcript_info.at[idx, 'concordance_index'] = concordance_index
-#                 df_transcript_info.at[idx, 'hazard_ratio'] = hazard_ratio
-#             except Exception as e:
-#                 print(f"Error fitting CoxPH model for index {idx}: {e}")
-#                 df_transcript_info.at[idx, 'logrank_p_value'] = None
-#                 df_transcript_info.at[idx, 'coxph_p_value'] = None
-#                 df_transcript_info.at[idx, 'concordance_index'] = None
-#                 df_transcript_info.at[idx, 'hazard_ratio'] = None
-#         else:
-#             df_transcript_info.at[idx, 'logrank_p_value'] = None
-#             df_transcript_info.at[idx, 'coxph_p_value'] = None
-#             df_transcript_info.at[idx, 'concordance_index'] = None
-#             df_transcript_info.at[idx, 'hazard_ratio'] = None
-    
-#     # Move 'variant_information' to the first column
-#     cols = ['variant_information'] + [col for col in df_transcript_info if col != 'variant_information']
-#     df_transcript_info = df_transcript_info[cols]
-#     return df_transcript_info
-
-
-# def plot_km_curve(group_A, group_B, title):
-#     results_logrank = logrank_test(group_A['km_time'], group_B['km_time'], event_observed_A=group_A['km_status'], event_observed_B=group_B['km_status'])
-#     logrank_p_value = results_logrank.p_value
-#     kmf = KaplanMeierFitter()
-#     kmf.fit(group_A['km_time'], event_observed=group_A['km_status'], label=f'Group A[{len(group_A)} patients]')
-#     kmf_A_sub = kmf.survival_function_
-#     ci_A = kmf.confidence_interval_
-#     kmf.fit(group_B['km_time'], event_observed=group_B['km_status'], label=f'Group B[{len(group_B)} patients]')
-#     kmf_B_sub = kmf.survival_function_
-#     ci_B = kmf.confidence_interval_
-#     fig = go.Figure()
-#     fig.add_trace(go.Scatter(x=kmf_A_sub.index, y=kmf_A_sub.iloc[:, 0], mode='lines', name=f'Group A[{len(group_A)} patients]'))
-#     fig.add_trace(go.Scatter(x=kmf_B_sub.index, y=kmf_B_sub.iloc[:, 0], mode='lines', name=f'Group B[{len(group_B)} patients]', line=dict(color='orange')))
-#     fig.add_trace(go.Scatter(
-#         x=list(ci_A.index) + list(ci_A.index[::-1]),
-#         y=list(ci_A.iloc[:, 0]) + list(ci_A.iloc[:, 1][::-1]),
-#         fill='toself',
-#         fillcolor='rgba(31, 119, 180, 0.2)',
-#         line=dict(color='rgba(255,255,255,0)'),
-#         hoverinfo="skip",
-#         showlegend=False
-#     ))
-#     fig.add_trace(go.Scatter(
-#         x=list(ci_B.index) + list(ci_B.index[::-1]),
-#         y=list(ci_B.iloc[:, 0]) + list(ci_B.iloc[:, 1][::-1]),
-#         fill='toself',
-#         fillcolor='rgba(255, 127, 14, 0.2)',
-#         line=dict(color='rgba(255,255,255,0)'),
-#         hoverinfo="skip",
-#         showlegend=False
-#     ))
-#     fig.update_layout(
-#         title={
-#             'text': f"{title}<br>Log Rank p-value: {logrank_p_value:.4f}",
-#             'y': 0.9,
-#             'x': 0.5,
-#             'xanchor': 'center',
-#             'yanchor': 'top'
-#         },
-#         xaxis_title='Time (Days)',
-#         yaxis_title='Survival Probability'
-#     )
-#     return(fig)
+  
