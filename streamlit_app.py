@@ -113,7 +113,7 @@ def calculate_p_values(df_kmf, df_transcript_info):
     df_transcript_info['variant_information'] = None
 
     for idx, row in df_transcript_info.iterrows():
-        selected_patients_ids = [pid.split('_')[0] for pid in row['GBM_patient_ids'].split(',')]
+        selected_patients_ids = [pid.strip().split('_')[0] for pid in row['GBM_patient_ids'].split(',')]
         selected_patients = df_kmf[df_kmf['manifest_patient_id'].isin(selected_patients_ids)]
         df_transcript_info['variant_information'] = df_transcript_info.apply(
             lambda row: f"{row['chromosome']}:{row['variant_start_position']}:{row['ref_nucleotide']}>{row['alternative_nucleotide']}",
