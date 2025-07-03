@@ -837,8 +837,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
         advanced_pagination_aggrid(filtered_data,f"df_significant_variants_frequency_{data_source}_{analysis_type_folder}_{selected_site}.tsv")
 
     
-    st.write("TEST")
-    
+
     # Create bins for the histogram
     bins = [i for i in range(10, 101, 10)]
     filtered_data['percentage_bin'] = pd.cut(filtered_data['GBM_patient_percentage'], bins=bins, right=True, include_lowest=True)
@@ -948,8 +947,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
 
         #advanced_pagination_aggrid(df_transcript_info, f"df_significant_clinical_{data_source}_{analysis_type_folder}_{selected_site}_{bin_start}_{bin_end}.tsv")
         df_clinical = df_clinical.drop(columns=['group', 'group_numeric'])
-        st.dataframe(df_transcript_info)
-        st.dataframe(df_clinical)
+
         
         
         
