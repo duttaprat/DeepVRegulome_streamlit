@@ -119,7 +119,7 @@ def calculate_p_values(df_kmf, df_transcript_info):
             lambda row: f"{row['chromosome']}:{row['variant_start_position']}:{row['ref_nucleotide']}>{row['alternative_nucleotide']}",
             axis=1
         )
-
+        st.write(selected_patients)
         df_kmf["group"] = df_kmf.apply(lambda r: "B" if r['manifest_patient_id'] in selected_patients_ids else "A", axis=1)
         df_kmf["group_numeric"] = df_kmf["group"].apply(lambda x: 1 if x == "B" else 0)
 
