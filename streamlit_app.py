@@ -862,7 +862,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
         bin_counts_unique.columns = ['percentage_bin', 'count']
         bin_counts_unique['percentage_bin'] = bin_counts_unique['percentage_bin'].astype(str)
     #print(unique_regions)
-    st.dataframe(unique_regions)
+    #st.dataframe(unique_regions)
     # Create bins for the histogram of unique regions
 
     #Plot for unique regions
@@ -885,17 +885,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
     # Plotly bar chart
     st.write("""
 
-    This section provides two bar charts that illustrate how genetic variations affect the patient population: 
-    
-    ### 1. Region-Wise Distribution
-    The **region-wise distribution** chart shows the number of unique **genomic regions** affecting different proportions of the patient population. Each bar represents the count of unique regions within a given percentage range (e.g., 10-20%, 20-30%, etc.).
-
-    - **Purpose**: This chart highlights the impact of distinct genomic regions on the patient population, providing insights into which regions are more prevalent across patients.
-
-    ---
-
-    ### 2. Variant-Wise Distribution (Interactive)
-    The **variant-wise distribution** chart illustrates the total number of individual **variants** affecting patients, grouped by percentage ranges (e.g., 10-20%, 20-30%, etc.).
+    This section provides a bar chart that illustrate how the total number of individual **variants** affecting patients, grouped by percentage ranges (e.g., 10-20%, 20-30%, etc.).
 
     - **Purpose**: This chart helps explore the overall burden of genetic variants, considering all individual occurrences across all genomic regions.
     - **Interactive Features**:
@@ -905,7 +895,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
     
     ---
 
-    Together, these visualizations provide complementary insights into the prevalence of genomic regions and individual variants across the patient population.
+    
     """, unsafe_allow_html=True)
     
 
@@ -919,41 +909,8 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
 # """, unsafe_allow_html=True)
     
     
-    ## Plotly bar chart distribution for regions 
-    if len(filtered_data) > 1:
-        fig_unique = px.bar(
-            bin_counts_unique, 
-            x='common_GBM_percentage_bin', 
-            y='count', 
-            color='common_GBM_percentage_bin',
-            title="Percentage of Patients Affected by Unique Regulatory Regions",
-            labels={'common_GBM_percentage_bin': 'Percentage of Patients', 'count': 'Count'},
-            color_discrete_sequence=px.colors.qualitative.Set2
-        )
-    else:
-        fig_unique = px.bar(
-            bin_counts_unique, 
-            x='percentage_bin', 
-            y='count', 
-            color='percentage_bin',
-            title="Percentage of Patients Affected by Unique Regulatory Regions",
-            labels={'percentage_bin': 'Percentage of Patients', 'count': 'Count'},
-            color_discrete_sequence=px.colors.qualitative.Set2
-        )
-    # Update the layout to standardize the title formatting
-    fig_unique.update_layout(
-        title={
-            'text': "Percentage of Patients Affected by Unique Regulatory Regions",
-            'y': 0.95,  # Vertical position of the title
-            'x': 0.5,   # Horizontal position (centered)
-            'xanchor': 'center',
-            'yanchor': 'top'
-        },
-        title_font=dict(size=18)  # Adjust font size as needed
-    )
-
-    fig_unique.update_traces(texttemplate='%{y}', textposition='outside')
-    st.plotly_chart(fig_unique)
+    
+    
     
     
     ## Plotly bar chart distribution for variants 
