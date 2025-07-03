@@ -837,7 +837,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
         advanced_pagination_aggrid(filtered_data,f"df_significant_variants_frequency_{data_source}_{analysis_type_folder}_{selected_site}.tsv")
 
     
-    st.write("TEST")
+    
     
     # Create bins for the histogram
     bins = [i for i in range(10, 101, 10)]
