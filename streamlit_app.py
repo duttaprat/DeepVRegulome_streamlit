@@ -103,7 +103,8 @@ def compute_common_patients(group):
 def calculate_p_values(df_kmf, df_transcript_info):
     kmf = KaplanMeierFitter()
     cph = CoxPHFitter(penalizer=0.1)  # Adding a penalizer
-
+    st.dataframe(df_kmf)
+    st.dataframe(df_transcript_info)
     # Add new columns to df_transcript_info to store results
     df_transcript_info['logrank_p_value'] = None
     df_transcript_info['coxph_p_value'] = None
@@ -121,6 +122,7 @@ def calculate_p_values(df_kmf, df_transcript_info):
 
         df_kmf["group"] = df_kmf.apply(lambda r: "B" if r['manifest_patient_id'] in selected_patients_ids else "A", axis=1)
         df_kmf["group_numeric"] = df_kmf["group"].apply(lambda x: 1 if x == "B" else 0)
+
         group_A = df_kmf[df_kmf['group'] == 'A']
         group_B = df_kmf[df_kmf['group'] == 'B']
 
