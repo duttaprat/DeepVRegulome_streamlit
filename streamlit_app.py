@@ -945,8 +945,11 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
         
         #advanced_pagination_aggrid(filtered_rows, f"df_significant_variants_frequency_{data_source}_{analysis_type_folder}_{selected_site}_{bin_start}_{bin_end}.tsv")
         df_transcript_info = calculate_p_values(df_clinical, filtered_rows)
+
         #advanced_pagination_aggrid(df_transcript_info, f"df_significant_clinical_{data_source}_{analysis_type_folder}_{selected_site}_{bin_start}_{bin_end}.tsv")
         df_clinical = df_clinical.drop(columns=['group', 'group_numeric'])
+        st.dataframe(df_transcript_info)
+        st.dataframe(df_clinical)
         
         
         
