@@ -1037,7 +1037,7 @@ if df_variants_frequency is not None and df_intersect_with_dbsnp is not None and
             #st.write("Selected Rows:", selected_rows)  # For debugging, showing the selected rows
             variant_info = selected_rows.iloc[0]['variant_information']
             selected_variant_data = df_transcript_info[df_transcript_info['variant_information'] == variant_info].iloc[0]
-            selected_patients_ids = [pid.split('_')[0] for pid in selected_variant_data['GBM_patient_ids'].split(',')]
+            selected_patients_ids = [pid.strip().split('_')[0] for pid in selected_variant_data['GBM_patient_ids'].split(',')]
             selected_patients = df_clinical[df_clinical['manifest_patient_id'].isin(selected_patients_ids)]
             df_clinical["group"] = df_clinical.apply(lambda r: "B" if r['manifest_patient_id'] in selected_patients_ids else "A", axis=1)
             df_clinical["group_numeric"] = df_clinical["group"].apply(lambda x: 1 if x == "B" else 0)
