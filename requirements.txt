@@ -7,3 +7,4 @@ streamlit_plotly_events==0.0.6
 openpyxl==3.1.5
 streamlit-aggrid==1.0.5
 numpy
+requests
