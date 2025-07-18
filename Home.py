@@ -17,7 +17,7 @@ st.set_page_config(
 
 # --- Google Analytics Tracking Code ---
 # This injects the script into the app's HTML head.
-components.html(
+st.markdown(
     """
     <!-- Google tag (gtag.js) -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X7CEN7XS7F"></script>
@@ -27,10 +27,9 @@ components.html(
       gtag('js', new Date());
 
       gtag('config', 'G-X7CEN7XS7F');
-</script>
+    </script>
     """,
-    height=0,
-    width=0,
+    unsafe_allow_html=True
 )
 
 # --- CSS for Vertical Alignment ---
