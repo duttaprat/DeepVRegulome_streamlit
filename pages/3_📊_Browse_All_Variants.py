@@ -165,7 +165,7 @@ def colorize_motif(motif):
         )
     return "".join(html_parts)
 
-    
+
 # --- Main Page Logic ---
 st.title("📊 Browse and Analyze Variants")
 st.markdown("Use the sidebar to select the analysis type, then use the controls on this page to filter and explore the data.")
@@ -362,6 +362,46 @@ if not selected_rows_df.empty:
                 st.markdown(f"**Best JASPAR Match(es):** {links_display_html}", unsafe_allow_html=True)
                         
                 st.caption("Motif location is highlighted in the heatmap with a dotted line.")
+                # Create two columns
+                motif_col, jaspar_col = st.columns([2, 1], gap="large")
+
+                # ----- Left: Colorized motifs in little boxes -----
+                with motif_col:
+                    st.markdown("#### 🎨 Predicted Motif(s)")
+                    # Wrap each colored motif in a styled div
+                    html = "<div style='display: flex; gap: 8px; flex-wrap: wrap;'>"
+                    for motif in motif_list:
+                        colored = colorize_motif(motif)
+                        html += (
+                            "<div style="
+                            "'border:1px solid #ddd; border-radius:6px; padding:4px 8px; "
+                            "background-color:#f9f9f9;'>{}</div>"
+                        ).format(colored)
+                    html += "</div>"
+                    st.markdown(html, unsafe_allow_html=True)
+
+                # ----- Right: JASPAR IDs as clickable “buttons” -----
+                with jaspar_col:
+                    st.markdown("#### 🔗 Best JASPAR Match(es)")
+                    for j_id in jaspar_id_list:
+                        jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
+                        # If you have st.link_button available (Streamlit ≥1.30)
+                        if hasattr(st, "link_button"):
+                            st.link_button(label=j_id, url=jaspar_url)
+                        else:
+                            # Fallback to an HTML-styled button
+                            btn_html = (
+                                f"<a href='{jaspar_url}' target='_blank' style="
+                                "'text-decoration:none;'>"
+                                "<div style="
+                                "'display:inline-block; margin:4px 4px 4px 0; padding:6px 12px; "
+                                "background-color:#0072B2; color:white; border-radius:4px;'>"
+                                f"{j_id}</div></a>"
+                            )
+                            st.markdown(btn_html, unsafe_allow_html=True)
+
+                # ----- Caption -----
+                st.caption("Motif positions are highlighted in the heatmap with a dotted line.")
             else:
                 st.info("No known JASPAR motif was found to be directly disrupted by this variant.")
 
