@@ -213,7 +213,7 @@ def get_analytics_data():
 
 # --- Display the Analytics Section on the Page ---
 st.divider()
-st.header("🌎 Community Engagement")
+# st.header("🌎 Community Engagement")
 
 # Call the function to get the data
 total_users, total_countries, df_top_countries = get_analytics_data()
@@ -221,8 +221,8 @@ total_users, total_countries, df_top_countries = get_analytics_data()
 if total_users > 0:
     col1, col2 = st.columns([1, 2], gap="large")
     with col1:
-        st.metric("Total Unique Viewers", f"{total_users:,}")
-        st.metric("Countries Reached", total_countries)
+        st.metric("👥 Total Unique Viewers", f"{total_users:,}")
+        st.metric("🌍 Countries Reached", total_countries)
         st.caption("Live data reflects viewership since launch.")
     with col2:
         fig = px.bar(
