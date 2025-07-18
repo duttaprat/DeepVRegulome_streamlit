@@ -160,16 +160,16 @@ c1, c2, c3 = st.columns(3, gap="large")
 
 c1.metric("👥 Unique Visitors", unique_users)
 c2.metric("🌍 Countries Represented", unique_countries)
-with c3:
-    # ─── Top 5 Countries Chart ─────────────────────
-    fig = px.bar(
-        country_counts.head(5), 
-        x="country", 
-        y="visits",
-        title="Top 5 Countries by Visits",
-        text="visits"
-    )
-    st.plotly_chart(fig, use_container_width=True)
+# with c3:
+#     # ─── Top 5 Countries Chart ─────────────────────
+#     fig = px.bar(
+#         country_counts.head(5), 
+#         x="country", 
+#         y="visits",
+#         title="Top 5 Countries by Visits",
+#         text="visits"
+#     )
+#     st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
 
