@@ -6,6 +6,8 @@ from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import RunReportRequest
 from google.oauth2 import service_account
 import streamlit.components.v1 as components
+import uuid
+import requests
 
 # --- Page Configuration (Should be the first command) ---
 st.set_page_config(
@@ -15,22 +17,64 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# --- Google Analytics Tracking Code ---
-# This injects the script into the app's HTML head.
-st.markdown(
-    """
-    <!-- Google tag (gtag.js) -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X7CEN7XS7F"></script>
-    <script>
-      window.dataLayer = window.dataLayer || [];
-      function gtag(){dataLayer.push(arguments);}
-      gtag('js', new Date());
 
-      gtag('config', 'G-X7CEN7XS7F');
-    </script>
-    """,
-    unsafe_allow_html=True
-)
+
+# Pull from secrets
+MID    = st.secrets["ga"]["measurement_id"]
+SECRET = st.secrets["ga"]["api_secret"]
+
+def send_page_view():
+    # 1) Create or reuse a per-session client ID
+    if "ga_cid" not in st.session_state:
+        st.session_state["ga_cid"] = str(uuid.uuid4())
+    cid = st.session_state["ga_cid"]
+
+    # 2) Build the payload for a standard page_view
+    payload = {
+        "client_id": cid,
+        "events": [
+            {
+                "name": "page_view",
+                "params": {
+                    "page_title": "DeepVRegulome",
+                    "page_location": "https://deepvregulome.streamlit.app/",
+                    "engagement_time_msec": 1
+                }
+            }
+        ]
+    }
+
+    # 3) Send to GA4
+    url = (
+        "https://www.google-analytics.com/mp/collect"
+        f"?measurement_id={MID}&api_secret={SECRET}"
+    )
+    try:
+        # short timeout so app startup isn’t delayed
+        requests.post(url, json=payload, timeout=2)
+    except:
+        pass
+
+# Fire it once at startup
+send_page_view()
+
+
+# # --- Google Analytics Tracking Code ---
+# # This injects the script into the app's HTML head.
+# st.markdown(
+#     """
+#     <!-- Google tag (gtag.js) -->
+#     <script async src="https://www.googletagmanager.com/gtag/js?id=G-X7CEN7XS7F"></script>
+#     <script>
+#       window.dataLayer = window.dataLayer || [];
+#       function gtag(){dataLayer.push(arguments);}
+#       gtag('js', new Date());
+
+#       gtag('config', 'G-X7CEN7XS7F');
+#     </script>
+#     """,
+#     unsafe_allow_html=True
+# )
 
 # --- CSS for Vertical Alignment ---
 st.markdown("""
