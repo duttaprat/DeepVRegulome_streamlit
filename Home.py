@@ -153,3 +153,85 @@ c2.metric("🌍 Countries Represented", unique_countries)
 #     st.plotly_chart(fig, use_container_width=True)
 
 st.divider()
+
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import RunReportRequest
+from google.oauth2 import service_account
+import json
+
+# --- Function to Query the Google Analytics API ---
+# The @st.cache_data decorator is crucial for performance. It ensures that
+# you don't call the Google API every single time a user interacts with a widget.
+# The data will be cached for 1 hour (3600 seconds).
+@st.cache_data(ttl=3600)
+def get_analytics_data():
+    """
+    Fetches and parses visitor data from the Google Analytics Data API.
+    Returns total users, total countries, and a DataFrame of the top 5 countries.
+    """
+    try:
+        # Load credentials from Streamlit's secrets
+        # The secret is named "google_credentials" and contains the entire JSON key file content.
+        creds_dict = st.secrets["google_credentials"]
+        credentials = service_account.Credentials.from_service_account_info(creds_dict)
+        client = BetaAnalyticsDataClient(credentials=credentials)
+
+        # The GA4 Property ID is also stored in secrets
+        property_id = st.secrets["google_property_id"]
+
+        # Define the API request
+        request = RunReportRequest(
+            property=f"properties/{property_id}",
+            dimensions=[{"name": "country"}],
+            metrics=[{"name": "totalUsers"}],
+            date_ranges=[{"start_date": "2024-01-01", "end_date": "today"}],
+        )
+        response = client.run_report(request)
+
+        # Parse the API response into a pandas DataFrame
+        rows = []
+        for row in response.rows:
+            rows.append({
+                'Country': row.dimension_values[0].value,
+                'Visitors': int(row.metric_values[0].value)
+            })
+        
+        if not rows:
+            return 0, 0, pd.DataFrame()
+
+        df = pd.DataFrame(rows)
+        total_users = df['Visitors'].sum()
+        total_countries = df['Country'].nunique()
+        
+        return total_users, total_countries, df.nlargest(5, 'Visitors')
+
+    except Exception as e:
+        # Display a user-friendly error message if the API call fails
+        st.error(f"Failed to fetch analytics data. Please ensure your secrets are configured correctly. Error: {e}")
+        return 0, 0, pd.DataFrame()
+
+
+# --- Display the Analytics Section on the Page ---
+st.divider()
+st.header("🌎 Community Engagement")
+
+# Call the function to get the data
+total_users, total_countries, df_top_countries = get_analytics_data()
+
+if total_users > 0:
+    col1, col2 = st.columns([1, 2], gap="large")
+    with col1:
+        st.metric("Total Unique Viewers", f"{total_users:,}")
+        st.metric("Countries Reached", total_countries)
+        st.caption("Live data reflects viewership since launch.")
+    with col2:
+        fig = px.bar(
+            df_top_countries.sort_values('Visitors', ascending=True),
+            x='Visitors', y='Country', orientation='h', title='Top 5 Viewer Countries',
+            text='Visitors', marker_color='#0072B2'
+        )
+        fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
+        st.plotly_chart(fig, use_container_width=True)
+else:
+    st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
+
