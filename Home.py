@@ -153,53 +153,78 @@ If you use the data or models from this portal in your research, please cite our
 
 st.divider()
 
-# --- Google Analytics Display Section ---
-@st.cache_data(ttl=3600) # Cache the data for 1 hour
-def get_analytics_data():
-    """Fetches and parses visitor data from the Google Analytics Data API."""
-    try:
-        creds_dict = st.secrets["google_credentials"]
-        credentials = service_account.Credentials.from_service_account_info(creds_dict)
-        client = BetaAnalyticsDataClient(credentials=credentials)
-        property_id = st.secrets["google_property_id"]
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import RunReportRequest
+from google.oauth2 import service_account
 
-        request = RunReportRequest(
-            property=f"properties/{property_id}",
-            dimensions=[{"name": "country"}],
-            metrics=[{"name": "totalUsers"}],
-            date_ranges=[{"start_date": "2024-01-01", "end_date": "today"}],
-        )
-        response = client.run_report(request)
+# 1) Caching the GA4 query for 1h
+@st.cache_data(ttl=3600)
+def get_global_usage():
+    creds_dict  = st.secrets["google_credentials"]
+    property_id = st.secrets["google_property_id"]
+    credentials = service_account.Credentials.from_service_account_info(creds_dict)
+    client      = BetaAnalyticsDataClient(credentials=credentials)
 
-        rows = [{'Country': row.dimension_values[0].value, 'Visitors': int(row.metric_values[0].value)} for row in response.rows]
-        if not rows: return 0, 0, pd.DataFrame()
+    request = RunReportRequest(
+        property=f"properties/{property_id}",
+        dimensions=[{"name":"country"}],
+        metrics=[{"name":"totalUsers"}],
+        date_ranges=[{"start_date":"2024-01-01","end_date":"today"}],
+    )
+    resp = client.run_report(request)
 
-        df = pd.DataFrame(rows)
-        return df['Visitors'].sum(), df['Country'].nunique(), df.nlargest(5, 'Visitors')
-    except Exception as e:
-        st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
-        return 0, 0, pd.DataFrame()
+    rows = [
+        {"country": r.dimension_values[0].value,
+         "visits":  int(r.metric_values[0].value)}
+        for r in resp.rows
+    ]
+    if not rows:
+        return 0, 0, pd.DataFrame(columns=["country","visits"])
 
+    df = pd.DataFrame(rows)
+    total_users     = int(df["visits"].sum())
+    total_countries = df["country"].nunique()
+    top5            = df.nlargest(5, "visits").reset_index(drop=True)
+    return total_users, total_countries, top5
 
+# 2) Pull your numbers
+total_users, total_countries, df_top5 = get_global_usage()
 
-st.header("🌎 Community Engagement")
+# 3) Render centered header + subheader
+st.markdown(
+    "<h2 style='text-align:center;'>🌎 Curious how far this tool has reached?</h2>",
+    unsafe_allow_html=True
+)
+st.markdown(
+    "<p style='text-align:center; color:gray;'>A live snapshot of total visitors & global reach</p>",
+    unsafe_allow_html=True
+)
 
-total_users, total_countries, df_top_countries = get_analytics_data()
+# 4) Three-column layout
+c1, c2, c3 = st.columns(3, gap="large")
 
-if total_users > 0:
-    col_a, col_b = st.columns([1, 2], gap="large")
-    with col_a:
-        st.metric("Total Unique Viewers", f"{total_users:,}")
-        st.metric("Countries Reached", total_countries)
-        st.caption("Live data reflects viewership since launch.")
-    with col_b:
-        fig = px.bar(
-            df_top_countries.sort_values('Visitors', ascending=True),
-            x='Visitors', y='Country', orientation='h', title='Top 5 Viewer Countries',
-            text='Visitors', marker_color='#0072B2'
-        )
-        fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
-        st.plotly_chart(fig, use_container_width=True)
-else:
-    st.info("Analytics data is still collecting. Please check the Google Analytics 'Realtime' report to verify setup.")
+with c1:
+    st.metric("👥 Total Unique Visitors", f"{total_users:,}")
+
+with c2:
+    st.metric("🌍 Countries Represented", f"{total_countries}")
+
+with c3:
+    # mini horizontal bar chart
+    fig = px.bar(
+        df_top5.sort_values("visits", ascending=True),
+        x="visits",
+        y="country",
+        orientation="h",
+        text="visits",
+    )
+    fig.update_layout(
+        showlegend=False,
+        margin=dict(l=0,r=0,t=30,b=0),
+        height=240,
+        yaxis_title=None,
+        font=dict(size=12),
+    )
+    st.plotly_chart(fig, use_container_width=True)
+
 
