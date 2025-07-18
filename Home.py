@@ -45,9 +45,8 @@ with col1:
     st.markdown("""
     **Navigate through the application using the sidebar on the left to:**
     - **🏠 Overview:** View high-level statistics and patient cohort data.
-    - **Model Performance:** Evaluate the accuracy and predictive power of our underlying models.
-    - **Browse All Variants:** Interactively filter and explore the complete dataset of predicted functional variants and their associated survival plots.
-    - **Motif Validation:** See how our models learned biologically meaningful transcription factor binding motifs.
+    - **🔬 Model Performance:** Evaluate the accuracy and predictive power of our underlying models.
+    - **📊 Browse All Variants:** Interactively explore the full dataset, view motif validation results, and generate survival plots on-demand.
     """)
 
     # st.header("Abstract")
