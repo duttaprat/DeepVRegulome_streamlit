@@ -29,7 +29,7 @@ def load_and_process_accuracy_data():
     """Loads and prepares the TFBS accuracy statistics file."""
     try:
         # Load the data, which includes the 'Type' column
-        df = pd.read_csv("data/300bp_TFBS_accuracy_Stat.csv", sep=",")
+        df = pd.read_csv("data/TFBS_Summary.tsv", sep="\t")
         
         # Rename columns for prettier labels in the plots
         rename_dict = {
