@@ -342,61 +342,61 @@ if not selected_rows_df.empty:
                 motif_list = [m.strip() for m in str(associated_motifs).split(',')]
                 jaspar_id_list = [j.strip() for j in str(jaspar_ids).split(',')]
                 
-                # --- Create the styled HTML strings ---
+                # # --- Create the styled HTML strings ---
 
-                # For the motifs, now using the colorize_motif function
-                motif_html_parts = []
-                for motif in motif_list:
-                    motif_html_parts.append(colorize_motif(motif))
-                motifs_display_html = ", ".join(motif_html_parts)
+                # # For the motifs, now using the colorize_motif function
+                # motif_html_parts = []
+                # for motif in motif_list:
+                #     motif_html_parts.append(colorize_motif(motif))
+                # motifs_display_html = ", ".join(motif_html_parts)
 
-                # For the JASPAR links
-                link_html_parts = []
-                for j_id in jaspar_id_list:
-                    jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
-                    link_html_parts.append(f'<a href="{jaspar_url}" target="_blank" style="font-size: 20px;">{j_id}</a>')
-                links_display_html = ", ".join(link_html_parts)
+                # # For the JASPAR links
+                # link_html_parts = []
+                # for j_id in jaspar_id_list:
+                #     jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
+                #     link_html_parts.append(f'<a href="{jaspar_url}" target="_blank" style="font-size: 20px;">{j_id}</a>')
+                # links_display_html = ", ".join(link_html_parts)
 
-                # --- Display the label and the value on the same line ---
-                st.markdown(f"**Predicted Motif(s):** {motifs_display_html}", unsafe_allow_html=True)
-                st.markdown(f"**Best JASPAR Match(es):** {links_display_html}", unsafe_allow_html=True)
+                # # --- Display the label and the value on the same line ---
+                # st.markdown(f"**Predicted Motif(s):** {motifs_display_html}", unsafe_allow_html=True)
+                # st.markdown(f"**Best JASPAR Match(es):** {links_display_html}", unsafe_allow_html=True)
                         
-                st.caption("Motif location is highlighted in the heatmap with a dotted line.")
-                # Create one column per motif
-                cols = st.columns(len(motif_list), gap="large")
-                for idx, (motif, j_id) in enumerate(zip(motif_list, jaspar_id_list)):
-                    with cols[idx]:
-                        # 1) Colorized motif centered
-                        colored_html = colorize_motif(motif)
-                        st.markdown(
-                            f"<div style='text-align:center; margin-bottom:8px;'>{colored_html}</div>",
-                            unsafe_allow_html=True,
-                        )
+                # st.caption("Motif location is highlighted in the heatmap with a dotted line.")
+                # # Create one column per motif
+                # cols = st.columns(len(motif_list), gap="large")
+                # for idx, (motif, j_id) in enumerate(zip(motif_list, jaspar_id_list)):
+                #     with cols[idx]:
+                #         # 1) Colorized motif centered
+                #         colored_html = colorize_motif(motif)
+                #         st.markdown(
+                #             f"<div style='text-align:center; margin-bottom:8px;'>{colored_html}</div>",
+                #             unsafe_allow_html=True,
+                #         )
 
-                        # 2) Clickable JASPAR button
-                        jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
-                        if hasattr(st, "link_button"):
-                            st.link_button(label=j_id, url=jaspar_url)
-                        else:
-                            st.markdown(
-                                f"""
-                                <div style='text-align:center;'>
-                                  <a
-                                    href="{jaspar_url}"
-                                    target="_blank"
-                                    style="
-                                      display:inline-block;
-                                      background-color:#0072B2;
-                                      color:white;
-                                      padding:6px 12px;
-                                      border-radius:4px;
-                                      text-decoration:none;
-                                    "
-                                  >{j_id}</a>
-                                </div>
-                                """,
-                                unsafe_allow_html=True,
-                            )
+                #         # 2) Clickable JASPAR button
+                #         jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
+                #         if hasattr(st, "link_button"):
+                #             st.link_button(label=j_id, url=jaspar_url)
+                #         else:
+                #             st.markdown(
+                #                 f"""
+                #                 <div style='text-align:center;'>
+                #                   <a
+                #                     href="{jaspar_url}"
+                #                     target="_blank"
+                #                     style="
+                #                       display:inline-block;
+                #                       background-color:#0072B2;
+                #                       color:white;
+                #                       padding:6px 12px;
+                #                       border-radius:4px;
+                #                       text-decoration:none;
+                #                     "
+                #                   >{j_id}</a>
+                #                 </div>
+                #                 """,
+                #                 unsafe_allow_html=True,
+                #          )
                 # Build your lists
                 # motif_list     = [m.strip() for m in str(associated_motifs).split(",")]
                 # jaspar_id_list = [j.strip() for j in str(jaspar_ids).split(",")]
@@ -446,9 +446,10 @@ if not selected_rows_df.empty:
                 st.markdown(table_html, unsafe_allow_html=True)
 
 
-
-                # ----- Caption -----
-                st.caption("Motif positions are highlighted in the heatmap with a dotted line.")
+                st.markdown(
+                    "<h6 style='text-align: center;'>Motif positions are highlighted in the heatmap with a dotted line.</h6>",
+                    unsafe_allow_html=True
+                )
             else:
                 st.info("No known JASPAR motif was found to be directly disrupted by this variant.")
 
