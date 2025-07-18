@@ -60,10 +60,9 @@ st.set_page_config(
 
 
 
-# --- Google Analytics Tracking Code ---
-# This uses the Measurement Protocol, which is a robust server-side method.
+# --- Google Analytics Tracking Code (Server-Side) ---
+# This uses the Measurement Protocol, which is robust and doesn't rely on browser scripts.
 try:
-    # Check if the required secrets for tracking are present
     if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
         MID = st.secrets["ga"]["measurement_id"]
         SECRET = st.secrets["ga"]["api_secret"]
@@ -79,7 +78,7 @@ try:
         url = f"https://www.google-analytics.com/mp/collect?measurement_id={MID}&api_secret={SECRET}"
         requests.post(url, json=payload, timeout=2)
 except Exception:
-    # Silently pass if any part of the tracking fails
+    # Silently pass if tracking fails.
     pass
 
 
@@ -166,13 +165,9 @@ st.divider()
 @st.cache_data(ttl=3600)
 def get_analytics_data():
     """Fetches and parses visitor data from the Google Analytics Data API."""
-    # --- MODIFIED: Added checks to provide clearer error messages ---
     try:
-        # Check if the main 'ga' section and its keys exist
-        if "ga" not in st.secrets or "property_id" not in st.secrets["ga"] or "credentials" not in st.secrets["ga"]:
-            st.error("Your secrets are missing the `[ga]` section or required keys (`property_id`, `credentials`). Please check your secrets configuration.")
-            return 0, 0, pd.DataFrame()
-
+        # --- CORRECTED SECRET ACCESS ---
+        # Access the keys using the structure from your secrets file: [ga] and [ga.credentials]
         creds_dict = st.secrets["ga"]["credentials"]
         property_id = st.secrets["ga"]["property_id"]
         
@@ -192,10 +187,8 @@ def get_analytics_data():
 
         df = pd.DataFrame(rows)
         return df['Visitors'].sum(), df['Country'].nunique(), df.nlargest(5, 'Visitors')
-    
     except Exception as e:
-        # Catch other potential errors during the API call
-        st.error(f"Failed to fetch analytics data. Error: {e}")
+        st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
         return 0, 0, pd.DataFrame()
 
 st.divider()
@@ -213,7 +206,4 @@ if total_users > 0:
         fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
         st.plotly_chart(fig, use_container_width=True)
 else:
-    st.info("Analytics data is still collecting. Please check the Google Analytics 'Realtime' report to verify setup.")
-
-
-
+    st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
