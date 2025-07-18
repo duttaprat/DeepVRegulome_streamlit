@@ -25,8 +25,9 @@ components.html(
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
+
       gtag('config', 'G-X7CEN7XS7F');
-    </script>
+</script>
     """,
     height=0,
     width=0,
