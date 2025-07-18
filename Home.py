@@ -132,8 +132,9 @@ country_counts   = df["country"].value_counts().reset_index()
 country_counts.columns = ["country","visits"]
 
 # ─── 4) Display on the home page ──────────────────────────────
-st.markdown("<h2 style='text-align:center;'>🌎 Curious how far this tool has reached? Here's a snapshot of our live global usage:</h1>", unsafe_allow_html=True)
-st.markdown("### Welcome—glad you’re here!  \nBelow are some live usage stats:")
+st.markdown("<h2 style='text-align:center;'>🌎 Live Global Stats for DeepVRegulome</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Curious how far this tool has reached? Here's how many people are exploring variant biology with us!</p>", unsafe_allow_html=True)
+st.markdown("---")
 
 # ─── Usage Metrics ─────────────────────────────
 c1, c2, c3 = st.columns(3, gap="large")
@@ -151,34 +152,3 @@ with c3:
     )
     st.plotly_chart(fig, use_container_width=True)
 
-# ─── 4) Display Section ───────────────────────────────────────
-with st.container():
-    st.markdown("<h2 style='text-align:center;'>📊 Live Global Stats for DeepVRegulome</h2>", unsafe_allow_html=True)
-    st.markdown("<p style='text-align:center;'>Here's how many people are exploring variant biology with us!</p>", unsafe_allow_html=True)
-    st.markdown("---")
-
-    # ─── Usage Metrics ─────────────────────────────
-    c1, c2, c3 = st.columns([1, 1, 2], gap="large")
-
-    with c1:
-        st.metric("👥 Unique Visitors", unique_users)
-
-    with c2:
-        st.metric("🌍 Countries Represented", unique_countries)
-
-    with c3:
-        fig = px.bar(
-            country_counts.head(5),
-            x="country",
-            y="visits",
-            title="Top 5 Countries by Visits",
-            text="visits",
-            color="country"
-        )
-        fig.update_layout(
-            showlegend=False,
-            title_x=0.5,
-            height=300,
-            margin=dict(t=30, b=10)
-        )
-        st.plotly_chart(fig, use_container_width=True)
