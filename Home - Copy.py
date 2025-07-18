@@ -106,72 +106,72 @@ If you use the data or models from this portal in your research, please cite our
 """)
 
 st.divider()
-# import streamlit as st
-# import uuid, os, csv, time, requests
-# import pandas as pd
-# import plotly.express as px
+import streamlit as st
+import uuid, os, csv, time, requests
+import pandas as pd
+import plotly.express as px
 
-# # ─── 1) Initialization ────────────────────────────────────────
-# LOG = "visit_log.csv"
-# if not os.path.exists(LOG):
-#     with open(LOG, "w") as f:
-#         writer = csv.writer(f)
-#         writer.writerow(["ts","visitor_id","country"])
+# ─── 1) Initialization ────────────────────────────────────────
+LOG = "visit_log.csv"
+if not os.path.exists(LOG):
+    with open(LOG, "w") as f:
+        writer = csv.writer(f)
+        writer.writerow(["ts","visitor_id","country"])
 
-# # ─── 2) On each load, log a visit ─────────────────────────────
-# # 2a) Get or create a visitor ID in session_state
-# if "visitor_id" not in st.session_state:
-#     st.session_state.visitor_id = str(uuid.uuid4())
+# ─── 2) On each load, log a visit ─────────────────────────────
+# 2a) Get or create a visitor ID in session_state
+if "visitor_id" not in st.session_state:
+    st.session_state.visitor_id = str(uuid.uuid4())
 
-# vid = st.session_state.visitor_id
+vid = st.session_state.visitor_id
 
-# # 2b) Lookup country from IP (free service; please read their TOS!)
-# # Note: On some hosts you won’t get a real IP; you may need st.experimental_get_query_params or headers
-# ip = st.query_params.get("client_ip", [None])[0]
-# if ip is None:
-#     ip = requests.get("https://api.ipify.org").text  # fallback: your server’s IP
+# 2b) Lookup country from IP (free service; please read their TOS!)
+# Note: On some hosts you won’t get a real IP; you may need st.experimental_get_query_params or headers
+ip = st.query_params.get("client_ip", [None])[0]
+if ip is None:
+    ip = requests.get("https://api.ipify.org").text  # fallback: your server’s IP
 
-# try:
-#     country = requests.get(f"https://ipapi.co/{ip}/country_name/").text
-#     if not country or country.startswith("<"):
-#         country = "Unknown"
-# except Exception:
-#     country = "Unknown"
+try:
+    country = requests.get(f"https://ipapi.co/{ip}/country_name/").text
+    if not country or country.startswith("<"):
+        country = "Unknown"
+except Exception:
+    country = "Unknown"
 
-# # 2c) Append to CSV
-# with open(LOG, "a") as f:
-#     writer = csv.writer(f)
-#     writer.writerow([int(time.time()), vid, country])
+# 2c) Append to CSV
+with open(LOG, "a") as f:
+    writer = csv.writer(f)
+    writer.writerow([int(time.time()), vid, country])
 
-# # ─── 3) Compute usage metrics ─────────────────────────────────
-# df = pd.read_csv(LOG)
-# unique_users     = df["visitor_id"].nunique()
-# unique_countries = df["country"].nunique()
-# country_counts   = df["country"].value_counts().reset_index()
-# country_counts.columns = ["country","visits"]
+# ─── 3) Compute usage metrics ─────────────────────────────────
+df = pd.read_csv(LOG)
+unique_users     = df["visitor_id"].nunique()
+unique_countries = df["country"].nunique()
+country_counts   = df["country"].value_counts().reset_index()
+country_counts.columns = ["country","visits"]
 
-# # ─── 4) Display on the home page ──────────────────────────────
-# st.markdown("<h2 style='text-align:center;'>🌎 Live Global Stats for DeepVRegulome</h2>", unsafe_allow_html=True)
-# st.markdown("<p style='text-align:center;'>Curious how far this tool has reached? Here's how many people are exploring variant biology with us!</p>", unsafe_allow_html=True)
+# ─── 4) Display on the home page ──────────────────────────────
+st.markdown("<h2 style='text-align:center;'>🌎 Live Global Stats for DeepVRegulome</h2>", unsafe_allow_html=True)
+st.markdown("<p style='text-align:center;'>Curious how far this tool has reached? Here's how many people are exploring variant biology with us!</p>", unsafe_allow_html=True)
 
 
-# # ─── Usage Metrics ─────────────────────────────
-# c1, c2, c3 = st.columns(3, gap="large")
+# ─── Usage Metrics ─────────────────────────────
+c1, c2, c3 = st.columns(3, gap="large")
 
-# c1.metric("👥 Unique Visitors", unique_users)
-# c2.metric("🌍 Countries Represented", unique_countries)
-# # with c3:
-# #     # ─── Top 5 Countries Chart ─────────────────────
-# #     fig = px.bar(
-# #         country_counts.head(5), 
-# #         x="country", 
-# #         y="visits",
-# #         title="Top 5 Countries by Visits",
-# #         text="visits"
-# #     )
-# #     st.plotly_chart(fig, use_container_width=True)
+c1.metric("👥 Unique Visitors", unique_users)
+c2.metric("🌍 Countries Represented", unique_countries)
+# with c3:
+#     # ─── Top 5 Countries Chart ─────────────────────
+#     fig = px.bar(
+#         country_counts.head(5), 
+#         x="country", 
+#         y="visits",
+#         title="Top 5 Countries by Visits",
+#         text="visits"
+#     )
+#     st.plotly_chart(fig, use_container_width=True)
 
-# st.divider()
+st.divider()
 
 
 
@@ -179,16 +179,23 @@ st.divider()
 # The @st.cache_data decorator is crucial for performance. It ensures that
 # you don't call the Google API every single time a user interacts with a widget.
 # The data will be cached for 1 hour (3600 seconds).
-# --- Google Analytics Display Section ---
-@st.cache_data(ttl=3600) # Cache the data for 1 hour
+@st.cache_data(ttl=3600)
 def get_analytics_data():
-    """Fetches and parses visitor data from the Google Analytics Data API."""
+    """
+    Fetches and parses visitor data from the Google Analytics Data API.
+    Returns total users, total countries, and a DataFrame of the top 5 countries.
+    """
     try:
+        # Load credentials from Streamlit's secrets
+        # The secret is named "google_credentials" and contains the entire JSON key file content.
         creds_dict = st.secrets["google_credentials"]
         credentials = service_account.Credentials.from_service_account_info(creds_dict)
         client = BetaAnalyticsDataClient(credentials=credentials)
+
+        # The GA4 Property ID is also stored in secrets
         property_id = st.secrets["google_property_id"]
 
+        # Define the API request
         request = RunReportRequest(
             property=f"properties/{property_id}",
             dimensions=[{"name": "country"}],
@@ -197,27 +204,43 @@ def get_analytics_data():
         )
         response = client.run_report(request)
 
-        rows = [{'Country': row.dimension_values[0].value, 'Visitors': int(row.metric_values[0].value)} for row in response.rows]
-        if not rows: return 0, 0, pd.DataFrame()
+        # Parse the API response into a pandas DataFrame
+        rows = []
+        for row in response.rows:
+            rows.append({
+                'Country': row.dimension_values[0].value,
+                'Visitors': int(row.metric_values[0].value)
+            })
+        
+        if not rows:
+            return 0, 0, pd.DataFrame()
 
         df = pd.DataFrame(rows)
-        return df['Visitors'].sum(), df['Country'].nunique(), df.nlargest(5, 'Visitors')
+        total_users = df['Visitors'].sum()
+        total_countries = df['Country'].nunique()
+        
+        return total_users, total_countries, df.nlargest(5, 'Visitors')
+
     except Exception as e:
-        st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
+        # Display a user-friendly error message if the API call fails
+        st.error(f"Failed to fetch analytics data. Please ensure your secrets are configured correctly. Error: {e}")
         return 0, 0, pd.DataFrame()
 
-st.divider()
-st.header("🌎 Community Engagement")
 
+# --- Display the Analytics Section on the Page ---
+st.divider()
+# st.header("🌎 Community Engagement")
+
+# Call the function to get the data
 total_users, total_countries, df_top_countries = get_analytics_data()
 
 if total_users > 0:
-    col_a, col_b = st.columns([1, 2], gap="large")
-    with col_a:
-        st.metric("Total Unique Viewers", f"{total_users:,}")
-        st.metric("Countries Reached", total_countries)
+    col1, col2 = st.columns([1, 2], gap="large")
+    with col1:
+        st.metric("👥 Total Unique Viewers", f"{total_users:,}")
+        st.metric("🌍 Countries Reached", total_countries)
         st.caption("Live data reflects viewership since launch.")
-    with col_b:
+    with col2:
         fig = px.bar(
             df_top_countries.sort_values('Visitors', ascending=True),
             x='Visitors', y='Country', orientation='h', title='Top 5 Viewer Countries',
@@ -226,5 +249,5 @@ if total_users > 0:
         fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
         st.plotly_chart(fig, use_container_width=True)
 else:
-    st.info("Analytics data is still collecting. Please check the Google Analytics 'Realtime' report to verify setup.")
+    st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
 
