@@ -143,6 +143,29 @@ def plot_tfbs_performance_bars(model_metrics):
     
     return fig
 
+
+def colorize_motif(motif):
+    """
+    Takes a DNA sequence string and returns an HTML string with each
+    nucleotide colored according to standard conventions.
+    """
+    color_map = {
+        'A': '#10A546', # Green
+        'C': '#0C63D9', # Blue
+        'G': '#F57D0B', # Orange
+        'T': '#D62323', # Red
+        'N': '#BDBDBD'  # Grey for unknown
+    }
+    
+    html_parts = []
+    for char in motif.upper():
+        color = color_map.get(char, '#000000') # Default to black
+        html_parts.append(
+            f'<span style="font-size: 20px; font-family: monospace; font-weight: bold; color: {color};">{char}</span>'
+        )
+    return "".join(html_parts)
+
+    
 # --- Main Page Logic ---
 st.title("📊 Browse and Analyze Variants")
 st.markdown("Use the sidebar to select the analysis type, then use the controls on this page to filter and explore the data.")
@@ -321,10 +344,10 @@ if not selected_rows_df.empty:
                 
                 # --- Create the styled HTML strings ---
 
-                # For the motifs
+                # For the motifs, now using the colorize_motif function
                 motif_html_parts = []
                 for motif in motif_list:
-                    motif_html_parts.append(f'<span style="font-size: 20px; font-family: monospace; font-weight: bold;">{motif}</span>')
+                    motif_html_parts.append(colorize_motif(motif))
                 motifs_display_html = ", ".join(motif_html_parts)
 
                 # For the JASPAR links
