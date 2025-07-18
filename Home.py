@@ -134,7 +134,7 @@ country_counts.columns = ["country","visits"]
 # ─── 4) Display on the home page ──────────────────────────────
 st.markdown("<h2 style='text-align:center;'>🌎 Live Global Stats for DeepVRegulome</h2>", unsafe_allow_html=True)
 st.markdown("<p style='text-align:center;'>Curious how far this tool has reached? Here's how many people are exploring variant biology with us!</p>", unsafe_allow_html=True)
-st.markdown("---")
+
 
 # ─── Usage Metrics ─────────────────────────────
 c1, c2, c3 = st.columns(3, gap="large")
@@ -152,3 +152,4 @@ with c3:
     )
     st.plotly_chart(fig, use_container_width=True)
 
+st.divider()
