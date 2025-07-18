@@ -2,6 +2,10 @@ import streamlit as st
 import pandas as pd
 import plotly.express as px
 from PIL import Image
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import RunReportRequest
+from google.oauth2 import service_account
+import json
 
 # --- Page Configuration ---
 st.set_page_config(
@@ -10,6 +14,21 @@ st.set_page_config(
     page_icon="🧬",
     initial_sidebar_state="expanded" # Ensure the sidebar is open by default
 )
+
+# This is the new, correct way to add the Google Analytics tracking script
+
+st.html("""
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-X7CEN7XS7F"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+
+  gtag('config', 'G-X7CEN7XS7F');
+</script>
+""")
+
 
 st.markdown("""
 <style>
@@ -154,10 +173,7 @@ with c3:
 
 st.divider()
 
-from google.analytics.data_v1beta import BetaAnalyticsDataClient
-from google.analytics.data_v1beta.types import RunReportRequest
-from google.oauth2 import service_account
-import json
+
 
 # --- Function to Query the Google Analytics API ---
 # The @st.cache_data decorator is crucial for performance. It ensures that
