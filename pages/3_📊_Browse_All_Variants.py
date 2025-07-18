@@ -166,6 +166,88 @@ def colorize_motif(motif):
     return "".join(html_parts)
 
 
+# --- Main Function to Generate the Display ---
+def create_motif_display(motif_list, jaspar_id_list):
+    """
+    Generates a visually appealing card-based layout for displaying motifs.
+    """
+    
+    # --- CSS Styling for the cards and buttons ---
+    # This CSS defines the look of the cards, the layout, and the button hover effects.
+    css_style = """
+    <style>
+        .motif-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+            padding: 20px;
+            background-color: #f9f9f9;
+            border-radius: 10px;
+        }
+        .motif-card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            padding: 20px;
+            text-align: center;
+            width: 200px;
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .motif-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        .motif-label {
+            font-size: 14px;
+            color: #555;
+            margin-bottom: 10px;
+        }
+        .motif-sequence {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
+        .jaspar-button {
+            display: inline-block;
+            padding: 8px 16px;
+            background-image: linear-gradient(45deg, #0072B2, #009E73);
+            color: white;
+            border-radius: 5px;
+            text-decoration: none;
+            font-size: 16px;
+            font-weight: bold;
+            transition: background-image 0.3s ease;
+        }
+        .jaspar-button:hover {
+            background-image: linear-gradient(45deg, #009E73, #0072B2);
+        }
+    </style>
+    """
+
+    # --- Build the HTML for each card ---
+    cards_html = ""
+    for motif, j_id in zip(motif_list, jaspar_id_list):
+        url = f"https://jaspar.genereg.net/matrix/{j_id}/"
+        colored_motif = colorize_motif(motif)
+        
+        cards_html += f"""
+        <div class="motif-card">
+            <div class="motif-label">Predicted Motif</div>
+            <div class="motif-sequence">{colored_motif}</div>
+            <a href="{url}" target="_blank" class="jaspar-button">{j_id}</a>
+        </div>
+        """
+
+    # --- Combine CSS and HTML content ---
+    final_html = f"""
+    {css_style}
+    <div class="motif-container">
+        {cards_html}
+    </div>
+    """
+    
+    return final_html
+
 # --- Main Page Logic ---
 st.title("📊 Browse and Analyze Variants")
 st.markdown("Use the sidebar to select the analysis type, then use the controls on this page to filter and explore the data.")
@@ -450,6 +532,8 @@ if not selected_rows_df.empty:
                     "<h6 style='text-align: center;'>Motif positions are highlighted in the heatmap with a dotted line.</h6>",
                     unsafe_allow_html=True
                 )
+                html_content = create_motif_display(motif_list, jaspar_id_list)
+                st.markdown(html_content, unsafe_allow_html=True)
             else:
                 st.info("No known JASPAR motif was found to be directly disrupted by this variant.")
 
