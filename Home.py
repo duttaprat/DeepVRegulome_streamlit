@@ -85,3 +85,60 @@ If you use the data or models from this portal in your research, please cite our
 
 **Dutta, P. et al. DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome. *Nature Methods* (Under Revision).**
 """)
+
+import streamlit as st
+import uuid, os, csv, time, requests
+import pandas as pd
+import plotly.express as px
+
+# ─── 1) Initialization ────────────────────────────────────────
+LOG = "visit_log.csv"
+if not os.path.exists(LOG):
+    with open(LOG, "w") as f:
+        writer = csv.writer(f)
+        writer.writerow(["ts","visitor_id","country"])
+
+# ─── 2) On each load, log a visit ─────────────────────────────
+# 2a) Get or create a visitor ID in session_state
+if "visitor_id" not in st.session_state:
+    st.session_state.visitor_id = str(uuid.uuid4())
+
+vid = st.session_state.visitor_id
+
+# 2b) Lookup country from IP (free service; please read their TOS!)
+# Note: On some hosts you won’t get a real IP; you may need st.experimental_get_query_params or headers
+ip = st.experimental_get_query_params().get("client_ip", [None])[0]
+if ip is None:
+    ip = requests.get("https://api.ipify.org").text  # fallback: your server’s IP
+
+try:
+    country = requests.get(f"https://ipapi.co/{ip}/country_name/").text
+    if not country or country.startswith("<"):
+        country = "Unknown"
+except Exception:
+    country = "Unknown"
+
+# 2c) Append to CSV
+with open(LOG, "a") as f:
+    writer = csv.writer(f)
+    writer.writerow([int(time.time()), vid, country])
+
+# ─── 3) Compute usage metrics ─────────────────────────────────
+df = pd.read_csv(LOG)
+unique_users     = df["visitor_id"].nunique()
+unique_countries = df["country"].nunique()
+country_counts   = df["country"].value_counts().reset_index()
+country_counts.columns = ["country","visits"]
+
+# ─── 4) Display on the home page ──────────────────────────────
+st.markdown("<h1 style='text-align:center;'>🧬 DeepVRegulome</h1>", unsafe_allow_html=True)
+st.markdown("### Welcome—glad you’re here!  \nBelow are some live usage stats:")
+
+c1, c2 = st.columns(2, gap="large")
+c1.metric("👥 Unique Visitors", unique_users)
+c2.metric("🌎 Countries Represented", unique_countries)
+
+# ─── 5) (Optional) show top 5 countries bar chart ─────────────
+fig = px.bar(country_counts.head(5), x="country", y="visits",
+             title="Top 5 Countries by Visits", text="visits")
+st.plotly_chart(fig, use_container_width=True)
