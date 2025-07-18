@@ -362,43 +362,42 @@ if not selected_rows_df.empty:
                 st.markdown(f"**Best JASPAR Match(es):** {links_display_html}", unsafe_allow_html=True)
                         
                 st.caption("Motif location is highlighted in the heatmap with a dotted line.")
-                # Create two columns
-                motif_col, jaspar_col = st.columns([2, 1], gap="large")
+                # Create one column per motif
+                cols = st.columns(len(motif_list), gap="large")
 
-                # ----- Left: Colorized motifs in little boxes -----
-                with motif_col:
-                    st.markdown("#### 🎨 Predicted Motif(s)")
-                    # Wrap each colored motif in a styled div
-                    html = "<div style='display: flex; gap: 8px; flex-wrap: wrap;'>"
-                    for motif in motif_list:
-                        colored = colorize_motif(motif)
-                        html += (
-                            "<div style="
-                            "'border:1px solid #ddd; border-radius:6px; padding:4px 8px; "
-                            "background-color:#f9f9f9;'>{}</div>"
-                        ).format(colored)
-                    html += "</div>"
-                    st.markdown(html, unsafe_allow_html=True)
+                for idx, (motif, j_id) in enumerate(zip(motif_list, jaspar_id_list)):
+                    with cols[idx]:
+                        # 1) Colorized motif centered
+                        colored_html = colorize_motif(motif)
+                        st.markdown(
+                            f"<div style='text-align:center; margin-bottom:8px;'>{colored_html}</div>",
+                            unsafe_allow_html=True,
+                        )
 
-                # ----- Right: JASPAR IDs as clickable “buttons” -----
-                with jaspar_col:
-                    st.markdown("#### 🔗 Best JASPAR Match(es)")
-                    for j_id in jaspar_id_list:
+                        # 2) Clickable JASPAR button
                         jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
-                        # If you have st.link_button available (Streamlit ≥1.30)
                         if hasattr(st, "link_button"):
-                            st.link_button(label=j_id, url=jaspar_url)
+                            st.link_button(label=j_id, url=jaspar_url, key=f"jb_{j_id}")
                         else:
-                            # Fallback to an HTML-styled button
-                            btn_html = (
-                                f"<a href='{jaspar_url}' target='_blank' style="
-                                "'text-decoration:none;'>"
-                                "<div style="
-                                "'display:inline-block; margin:4px 4px 4px 0; padding:6px 12px; "
-                                "background-color:#0072B2; color:white; border-radius:4px;'>"
-                                f"{j_id}</div></a>"
+                            st.markdown(
+                                f"""
+                                <div style='text-align:center;'>
+                                  <a
+                                    href="{jaspar_url}"
+                                    target="_blank"
+                                    style="
+                                      display:inline-block;
+                                      background-color:#0072B2;
+                                      color:white;
+                                      padding:6px 12px;
+                                      border-radius:4px;
+                                      text-decoration:none;
+                                    "
+                                  >{j_id}</a>
+                                </div>
+                                """,
+                                unsafe_allow_html=True,
                             )
-                            st.markdown(btn_html, unsafe_allow_html=True)
 
                 # ----- Caption -----
                 st.caption("Motif positions are highlighted in the heatmap with a dotted line.")
