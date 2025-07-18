@@ -63,22 +63,21 @@ st.set_page_config(
 # --- Google Analytics Tracking Code ---
 # This uses the Measurement Protocol, which is a robust server-side method.
 try:
-    import uuid, requests
-    
-    MID = st.secrets["ga"]["measurement_id"]
-    SECRET = st.secrets["ga"]["api_secret"]
+    # Check if the required secrets for tracking are present
+    if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
+        MID = st.secrets["ga"]["measurement_id"]
+        SECRET = st.secrets["ga"]["api_secret"]
 
-    if "ga_cid" not in st.session_state:
-        st.session_state["ga_cid"] = str(uuid.uuid4())
-    cid = st.session_state["ga_cid"]
+        if "ga_cid" not in st.session_state:
+            st.session_state["ga_cid"] = str(uuid.uuid4())
+        cid = st.session_state["ga_cid"]
 
-    payload = {
-        "client_id": cid,
-        "events": [{"name": "page_view", "params": {"page_title": "DeepVRegulome Home"}}]
-    }
-    url = f"https://www.google-analytics.com/mp/collect?measurement_id={MID}&api_secret={SECRET}"
-    requests.post(url, json=payload, timeout=2)
-
+        payload = {
+            "client_id": cid,
+            "events": [{"name": "page_view", "params": {"page_title": "DeepVRegulome Home"}}]
+        }
+        url = f"https://www.google-analytics.com/mp/collect?measurement_id={MID}&api_secret={SECRET}"
+        requests.post(url, json=payload, timeout=2)
 except Exception:
     # Silently pass if any part of the tracking fails
     pass
@@ -167,8 +166,13 @@ st.divider()
 @st.cache_data(ttl=3600)
 def get_analytics_data():
     """Fetches and parses visitor data from the Google Analytics Data API."""
+    # --- MODIFIED: Added checks to provide clearer error messages ---
     try:
-        # Use the new, organized secrets structure
+        # Check if the main 'ga' section and its keys exist
+        if "ga" not in st.secrets or "property_id" not in st.secrets["ga"] or "credentials" not in st.secrets["ga"]:
+            st.error("Your secrets are missing the `[ga]` section or required keys (`property_id`, `credentials`). Please check your secrets configuration.")
+            return 0, 0, pd.DataFrame()
+
         creds_dict = st.secrets["ga"]["credentials"]
         property_id = st.secrets["ga"]["property_id"]
         
@@ -188,8 +192,10 @@ def get_analytics_data():
 
         df = pd.DataFrame(rows)
         return df['Visitors'].sum(), df['Country'].nunique(), df.nlargest(5, 'Visitors')
+    
     except Exception as e:
-        st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
+        # Catch other potential errors during the API call
+        st.error(f"Failed to fetch analytics data. Error: {e}")
         return 0, 0, pd.DataFrame()
 
 st.divider()
@@ -207,7 +213,7 @@ if total_users > 0:
         fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
         st.plotly_chart(fig, use_container_width=True)
 else:
-    st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
+    st.info("Analytics data is still collecting. Please check the Google Analytics 'Realtime' report to verify setup.")
 
 
 
