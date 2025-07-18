@@ -402,53 +402,49 @@ if not selected_rows_df.empty:
                 # jaspar_id_list = [j.strip() for j in str(jaspar_ids).split(",")]
 
                 # Two columns: left for motifs, right for JASPAR links
-                col_m, col_j = st.columns([1,1], gap="large")
+                # Build your data
+                    
+                #jaspar_id_list = ["MA0113.4", "MA1930.2"]  # corresponding JASPAR IDs
 
-                # --- Column 1: Predicted Motifs ---
-                with col_m:
-                    st.markdown("### Predicted Motif(s)", unsafe_allow_html=True)
-                    # Wrap motifs in a flex container so they sit inline nicely
-                    motifs_html = "<div style='display:flex;gap:12px;flex-wrap:wrap;justify-content:center;'>"
-                    for motif in motif_list:
-                        colored = colorize_motif(motif)
-                        motifs_html += (
-                            "<div style='border:1px solid #ddd; border-radius:6px; "
-                            "padding:4px 8px; background:#fafafa;'>" +
-                            colored +
-                            "</div>"
-                        )
-                    motifs_html += "</div>"
-                    st.markdown(motifs_html, unsafe_allow_html=True)
+                # Helper to colorize each motif
+                def motif_cell(motif):
+                    return f"<span style='font-family:monospace; font-size:18px;'>{colorize_motif(motif)}</span>"
 
-                # --- Column 2: Best JASPAR Matches ---
-                with col_j:
-                    st.markdown("### Best JASPAR Match(es)", unsafe_allow_html=True)
-                    # Stack buttons vertically, centered
-                    for j_id in jaspar_id_list:
-                        url = f"https://jaspar.genereg.net/matrix/{j_id}/"
-                        # use link_button if available
-                        if hasattr(st, "link_button"):
-                            st.link_button(label=j_id, url=url)
-                        else:
-                            st.markdown(
-                                f"""
-                                <div style='text-align:center; margin-bottom:8px;'>
-                                  <a
-                                    href="{url}"
-                                    target="_blank"
-                                    style="
-                                      display:inline-block;
-                                      background-color:#0072B2;
-                                      color:white;
-                                      padding:6px 12px;
-                                      border-radius:4px;
-                                      text-decoration:none;
-                                    "
-                                  >{j_id}</a>
-                                </div>
-                                """,
-                                unsafe_allow_html=True,
-                            )
+                # Helper to render each JASPAR button
+                def button_cell(j_id):
+                    url = f"https://jaspar.genereg.net/matrix/{j_id}/"
+                    return (
+                        f"<a href='{url}' target='_blank' "
+                        "style='display:inline-block; padding:6px 12px; "
+                        "background-color:#0072B2; color:white; border-radius:4px;"
+                        "text-decoration:none; font-size:16px;'>"
+                        f"{j_id}</a>"
+                    )
+
+                # Build table rows
+                # Header row label + one <td> per motif
+                motifs_html = "".join(f"<td style='padding:4px 12px;'>{motif_cell(m)}</td>" 
+                                      for m in motif_list)
+                buttons_html = "".join(f"<td style='padding:4px 12px;'>{button_cell(j)}</td>" 
+                                       for j in jaspar_id_list)
+
+                table_html = f"""
+                <div style="width:100%; display:flex; justify-content:center; margin:20px 0;">
+                  <table style="border-collapse:collapse; text-align:center; table-layout:auto;">
+                    <tr>
+                      <th style="padding:8px 16px; text-align:left;">Predicted Motif(s)</th>
+                      {motifs_html}
+                    </tr>
+                    <tr>
+                      <th style="padding:8px 16px; text-align:left;">Best JASPAR Match(es)</th>
+                      {buttons_html}
+                    </tr>
+                  </table>
+                </div>
+                """
+
+                st.markdown(table_html, unsafe_allow_html=True)
+
 
 
                 # ----- Caption -----
