@@ -166,87 +166,6 @@ def colorize_motif(motif):
     return "".join(html_parts)
 
 
-# --- Main Function to Generate the Display ---
-def create_motif_display(motif_list, jaspar_id_list):
-    """
-    Generates a visually appealing card-based layout for displaying motifs.
-    """
-    
-    # --- CSS Styling for the cards and buttons ---
-    # This CSS defines the look of the cards, the layout, and the button hover effects.
-    css_style = """
-    <style>
-        .motif-container {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 20px;
-            justify-content: center;
-            padding: 20px;
-            background-color: #f9f9f9;
-            border-radius: 10px;
-        }
-        .motif-card {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-            padding: 20px;
-            text-align: center;
-            width: 200px;
-            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-        }
-        .motif-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
-        }
-        .motif-label {
-            font-size: 14px;
-            color: #555;
-            margin-bottom: 10px;
-        }
-        .motif-sequence {
-            font-size: 24px;
-            margin-bottom: 20px;
-        }
-        .jaspar-button {
-            display: inline-block;
-            padding: 8px 16px;
-            background-image: linear-gradient(45deg, #0072B2, #009E73);
-            color: white;
-            border-radius: 5px;
-            text-decoration: none;
-            font-size: 16px;
-            font-weight: bold;
-            transition: background-image 0.3s ease;
-        }
-        .jaspar-button:hover {
-            background-image: linear-gradient(45deg, #009E73, #0072B2);
-        }
-    </style>
-    """
-
-    # --- Build the HTML for each card ---
-    cards_html = ""
-    for motif, j_id in zip(motif_list, jaspar_id_list):
-        url = f"https://jaspar.genereg.net/matrix/{j_id}/"
-        colored_motif = colorize_motif(motif)
-        
-        cards_html += f"""
-        <div class="motif-card">
-            <div class="motif-label">Predicted Motif</div>
-            <div class="motif-sequence">{colored_motif}</div>
-            <a href="{url}" target="_blank" class="jaspar-button">{j_id}</a>
-        </div>
-        """
-
-    # --- Combine CSS and HTML content ---
-    final_html = f"""
-    {css_style}
-    <div class="motif-container">
-        {cards_html}
-    </div>
-    """
-    
-    return final_html
 
 # --- Main Page Logic ---
 st.title("📊 Browse and Analyze Variants")
@@ -489,53 +408,36 @@ if not selected_rows_df.empty:
                 #jaspar_id_list = ["MA0113.4", "MA1930.2"]  # corresponding JASPAR IDs
 
                 # Helper to colorize each motif
-                # Build your data
-
                 def motif_cell(motif):
-                    return f"<span style='font-family:monospace; font-size:20px;'>{colorize_motif(motif)}</span>"
+                    return f"<span style='font-family:monospace; font-size:18px;'>{colorize_motif(motif)}</span>"
 
+                # Helper to render each JASPAR button
                 def button_cell(j_id):
                     url = f"https://jaspar.genereg.net/matrix/{j_id}/"
                     return (
                         f"<a href='{url}' target='_blank' "
-                        "style='display:inline-block; padding:8px 16px; "
-                        "background-color:#0072B2; color:white; border-radius:6px;"
+                        "style='display:inline-block; padding:6px 12px; "
+                        "background-color:#0072B2; color:white; border-radius:4px;"
                         "text-decoration:none; font-size:16px;'>"
                         f"{j_id}</a>"
                     )
 
-                # Generate the motif & button cells
-                motifs_html = "".join(f"<td>{motif_cell(m)}</td>" for m in motif_list)
-                buttons_html = "".join(f"<td>{button_cell(j)}</td>" for j in jaspar_id_list)
+                # Build table rows
+                # Header row label + one <td> per motif
+                motifs_html = "".join(f"<td style='padding:4px 12px;'>{motif_cell(m)}</td>" 
+                                      for m in motif_list)
+                buttons_html = "".join(f"<td style='padding:4px 12px;'>{button_cell(j)}</td>" 
+                                       for j in jaspar_id_list)
 
                 table_html = f"""
-                <div style="width:100%; display:flex; justify-content:center; margin:30px 0;">
-                  <table style="
-                      border-collapse: collapse;
-                      text-align: center;
-                      table-layout: auto;
-                      font-family: sans-serif;
-                  ">
+                <div style="width:100%; display:flex; justify-content:center; margin:20px 0;">
+                  <table style="border-collapse:collapse; text-align:center; table-layout:auto;">
                     <tr>
-                      <th style="
-                          padding:12px 24px;
-                          text-align: left;
-                          font-size:18px;
-                          color:#333;
-                          background-color:#f2f2f2;
-                          border-radius:4px 0 0 4px;
-                      ">Predicted Motif(s)</th>
+                      <th style="padding:8px 16px; text-align:left;">Predicted Motif(s)</th>
                       {motifs_html}
                     </tr>
                     <tr>
-                      <th style="
-                          padding:12px 24px;
-                          text-align: left;
-                          font-size:18px;
-                          color:#333;
-                          background-color:#f2f2f2;
-                          border-radius:4px 0 0 4px;
-                      ">Best JASPAR Match(es)</th>
+                      <th style="padding:8px 16px; text-align:left;">Best JASPAR Match(es)</th>
                       {buttons_html}
                     </tr>
                   </table>
@@ -545,13 +447,10 @@ if not selected_rows_df.empty:
                 st.markdown(table_html, unsafe_allow_html=True)
 
 
-
                 st.markdown(
                     "<h6 style='text-align: center;'>Motif positions are highlighted in the heatmap with a dotted line.</h6>",
                     unsafe_allow_html=True
                 )
-                html_content = create_motif_display(motif_list, jaspar_id_list)
-                st.markdown(html_content, unsafe_allow_html=True)
             else:
                 st.info("No known JASPAR motif was found to be directly disrupted by this variant.")
 
