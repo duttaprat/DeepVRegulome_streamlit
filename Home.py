@@ -37,8 +37,10 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # --- Main Page Content ---
-st.title("🧬 DeepVRegulome")
-st.subheader("A DNABERT-based framework for predicting the functional impact of genomic variants on the human regulome.")
+# Title of the app
+st.title("🧬DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
+st.subheader("Welcome to the interactive data portal for **DeepVRegulome**, an interactive platform for exploring the functional impact of genomic variants.")
+
 st.divider()
 
 # --- Introduction and User Guidance ---
@@ -77,7 +79,7 @@ If you use the data or models from this portal in your research, please cite our
 **Dutta, P. et al. DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome. *Nature Methods* (Under Revision).**
 """)
 
-st.divider()
+
 
 
 # --- Google Analytics Display Section ---
