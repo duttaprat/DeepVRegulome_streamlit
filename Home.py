@@ -5,6 +5,7 @@ from PIL import Image
 from google.analytics.data_v1beta import BetaAnalyticsDataClient
 from google.analytics.data_v1beta.types import RunReportRequest
 from google.oauth2 import service_account
+import streamlit.components.v1 as components
 
 # --- Page Configuration (Should be the first command) ---
 st.set_page_config(
@@ -16,16 +17,20 @@ st.set_page_config(
 
 # --- Google Analytics Tracking Code ---
 # This injects the script into the app's HTML head.
-st.html("""
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-X7CEN7XS7F"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-X7CEN7XS7F');
-</script>
-""")
+components.html(
+    """
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-X7CEN7XS7F"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-X7CEN7XS7F');
+    </script>
+    """,
+    height=0,
+    width=0,
+)
 
 # --- CSS for Vertical Alignment ---
 st.markdown("""
