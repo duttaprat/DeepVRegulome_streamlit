@@ -108,7 +108,7 @@ vid = st.session_state.visitor_id
 
 # 2b) Lookup country from IP (free service; please read their TOS!)
 # Note: On some hosts you won’t get a real IP; you may need st.experimental_get_query_params or headers
-ip = st.experimental_get_query_params().get("client_ip", [None])[0]
+ip = st.query_params.get("client_ip", [None])[0]
 if ip is None:
     ip = requests.get("https://api.ipify.org").text  # fallback: your server’s IP
 
