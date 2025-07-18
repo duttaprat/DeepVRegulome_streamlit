@@ -364,7 +364,6 @@ if not selected_rows_df.empty:
                 st.caption("Motif location is highlighted in the heatmap with a dotted line.")
                 # Create one column per motif
                 cols = st.columns(len(motif_list), gap="large")
-
                 for idx, (motif, j_id) in enumerate(zip(motif_list, jaspar_id_list)):
                     with cols[idx]:
                         # 1) Colorized motif centered
@@ -377,7 +376,7 @@ if not selected_rows_df.empty:
                         # 2) Clickable JASPAR button
                         jaspar_url = f"https://jaspar.genereg.net/matrix/{j_id}/"
                         if hasattr(st, "link_button"):
-                            st.link_button(label=j_id, url=jaspar_url, key=f"jb_{j_id}")
+                            st.link_button(label=j_id, url=jaspar_url)
                         else:
                             st.markdown(
                                 f"""
@@ -398,6 +397,7 @@ if not selected_rows_df.empty:
                                 """,
                                 unsafe_allow_html=True,
                             )
+
 
                 # ----- Caption -----
                 st.caption("Motif positions are highlighted in the heatmap with a dotted line.")
