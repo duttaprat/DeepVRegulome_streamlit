@@ -65,6 +65,21 @@ with col2:
     except FileNotFoundError:
         st.error("Architecture image not found. Please add 'Figure1_architecture.PNG' to an 'assets' folder.")
 
+
+st.divider()
+
+
+# --- Citation Information ---
+st.header("How to Cite")
+st.markdown("""
+If you use the data or models from this portal in your research, please cite our publication:
+
+**Dutta, P. et al. DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome. *Nature Methods* (Under Revision).**
+""")
+
+st.divider()
+
+
 # --- Google Analytics Display Section ---
 @st.cache_data(ttl=3600) # Cache the data for 1 hour
 def get_analytics_data():
@@ -91,6 +106,7 @@ def get_analytics_data():
     except Exception as e:
         st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
         return 0, 0, pd.DataFrame()
+
 
 st.divider()
 st.header("🌎 Community Engagement")
