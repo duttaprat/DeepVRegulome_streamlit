@@ -489,36 +489,53 @@ if not selected_rows_df.empty:
                 #jaspar_id_list = ["MA0113.4", "MA1930.2"]  # corresponding JASPAR IDs
 
                 # Helper to colorize each motif
-                def motif_cell(motif):
-                    return f"<span style='font-family:monospace; font-size:18px;'>{colorize_motif(motif)}</span>"
+                # Build your data
 
-                # Helper to render each JASPAR button
+                def motif_cell(motif):
+                    return f"<span style='font-family:monospace; font-size:20px;'>{colorize_motif(motif)}</span>"
+
                 def button_cell(j_id):
                     url = f"https://jaspar.genereg.net/matrix/{j_id}/"
                     return (
                         f"<a href='{url}' target='_blank' "
-                        "style='display:inline-block; padding:6px 12px; "
-                        "background-color:#0072B2; color:white; border-radius:4px;"
+                        "style='display:inline-block; padding:8px 16px; "
+                        "background-color:#0072B2; color:white; border-radius:6px;"
                         "text-decoration:none; font-size:16px;'>"
                         f"{j_id}</a>"
                     )
 
-                # Build table rows
-                # Header row label + one <td> per motif
-                motifs_html = "".join(f"<td style='padding:4px 12px;'>{motif_cell(m)}</td>" 
-                                      for m in motif_list)
-                buttons_html = "".join(f"<td style='padding:4px 12px;'>{button_cell(j)}</td>" 
-                                       for j in jaspar_id_list)
+                # Generate the motif & button cells
+                motifs_html = "".join(f"<td>{motif_cell(m)}</td>" for m in motif_list)
+                buttons_html = "".join(f"<td>{button_cell(j)}</td>" for j in jaspar_id_list)
 
                 table_html = f"""
-                <div style="width:100%; display:flex; justify-content:center; margin:20px 0;">
-                  <table style="border-collapse:collapse; text-align:center; table-layout:auto;">
+                <div style="width:100%; display:flex; justify-content:center; margin:30px 0;">
+                  <table style="
+                      border-collapse: collapse;
+                      text-align: center;
+                      table-layout: auto;
+                      font-family: sans-serif;
+                  ">
                     <tr>
-                      <th style="padding:8px 16px; text-align:left;">Predicted Motif(s)</th>
+                      <th style="
+                          padding:12px 24px;
+                          text-align: left;
+                          font-size:18px;
+                          color:#333;
+                          background-color:#f2f2f2;
+                          border-radius:4px 0 0 4px;
+                      ">Predicted Motif(s)</th>
                       {motifs_html}
                     </tr>
                     <tr>
-                      <th style="padding:8px 16px; text-align:left;">Best JASPAR Match(es)</th>
+                      <th style="
+                          padding:12px 24px;
+                          text-align: left;
+                          font-size:18px;
+                          color:#333;
+                          background-color:#f2f2f2;
+                          border-radius:4px 0 0 4px;
+                      ">Best JASPAR Match(es)</th>
                       {buttons_html}
                     </tr>
                   </table>
@@ -526,6 +543,7 @@ if not selected_rows_df.empty:
                 """
 
                 st.markdown(table_html, unsafe_allow_html=True)
+
 
 
                 st.markdown(
