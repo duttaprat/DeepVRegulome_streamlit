@@ -1,2 +1,0 @@
-[googleAnalytics]
-measurementId = "G-X7CEN7XS7F"
