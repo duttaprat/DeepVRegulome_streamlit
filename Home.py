@@ -97,24 +97,24 @@ st.markdown("""
 
 # --- Google Analytics Tracking Code (Server-Side) ---
 # This uses the Measurement Protocol, which is robust and doesn't rely on browser scripts.
-try:
-    if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
-        MID = st.secrets["ga"]["measurement_id"]
-        SECRET = st.secrets["ga"]["api_secret"]
+# try:
+#     if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
+#         MID = st.secrets["ga"]["measurement_id"]
+#         SECRET = st.secrets["ga"]["api_secret"]
 
-        if "ga_cid" not in st.session_state:
-            st.session_state["ga_cid"] = str(uuid.uuid4())
-        cid = st.session_state["ga_cid"]
+#         if "ga_cid" not in st.session_state:
+#             st.session_state["ga_cid"] = str(uuid.uuid4())
+#         cid = st.session_state["ga_cid"]
 
-        payload = {
-            "client_id": cid,
-            "events": [{"name": "page_view", "params": {"page_title": "DeepVRegulome Home"}}]
-        }
-        url = f"https://www.google-analytics.com/mp/collect?measurement_id={MID}&api_secret={SECRET}"
-        requests.post(url, json=payload, timeout=2)
-except Exception:
-    # Silently pass if tracking fails.
-    pass
+#         payload = {
+#             "client_id": cid,
+#             "events": [{"name": "page_view", "params": {"page_title": "DeepVRegulome Home"}}]
+#         }
+#         url = f"https://www.google-analytics.com/mp/collect?measurement_id={MID}&api_secret={SECRET}"
+#         requests.post(url, json=payload, timeout=2)
+# except Exception:
+#     # Silently pass if tracking fails.
+#     pass
 
 
 # --- CSS for Vertical Alignment ---
