@@ -361,3 +361,37 @@ def get_analytics_data():
         import traceback
         st.code(traceback.format_exc())
         return 0, 0, pd.DataFrame()
+
+st.divider()
+
+# --- Google Analytics Display Section ---
+st.header("🌎 Community Engagement")
+
+total_users, total_countries, df_top_countries = get_analytics_data()
+
+if total_users > 0:
+    col_a, col_b = st.columns([1, 2], gap="large")
+    with col_a:
+        st.metric("Total Unique Visitors", f"{total_users:,}")
+        st.metric("Countries Reached", total_countries)
+    with col_b:
+        if not df_top_countries.empty:
+            fig = px.bar(
+                df_top_countries.sort_values('Visitors', ascending=True),
+                x='Visitors',
+                y='Country',
+                orientation='h',
+                title='Top 5 Visitor Countries',
+                text='Visitors',
+                color_discrete_sequence=['#0072B2']
+            )
+            fig.update_layout(
+                showlegend=False,
+                margin=dict(l=10, r=10, t=40, b=10),
+                yaxis_title=None,
+                xaxis_title="Number of Visitors"
+            )
+            fig.update_traces(textposition='outside')
+            st.plotly_chart(fig, use_container_width=True)
+else:
+    st.info("Analytics data is still collecting. Check back soon!")
