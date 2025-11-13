@@ -9,6 +9,13 @@ import streamlit.components.v1 as components
 import uuid
 import requests
 
+from google.analytics.data_v1beta import BetaAnalyticsDataClient
+from google.analytics.data_v1beta.types import RunReportRequest, DateRange, Dimension, Metric
+from google.oauth2 import service_account
+import streamlit.components.v1 as components
+import uuid
+import requests
+
 # --- Page Configuration (Should be the first command) ---
 st.set_page_config(
     layout="wide",
@@ -17,7 +24,33 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+# --- Google Analytics Tracking (Measurement Protocol) ---
+try:
+    if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
+        MID = st.secrets["ga"]["measurement_id"]
+        SECRET = st.secrets["ga"]["api_secret"]
 
+        if "ga_cid" not in st.session_state:
+            st.session_state["ga_cid"] = str(uuid.uuid4())
+        cid = st.session_state["ga_cid"]
+
+        payload = {
+            "client_id": cid,
+            "events": [{"name": "page_view", "params": {"page_title": "DeepVRegulome Home"}}]
+        }
+        url = f"https://www.google-analytics.com/mp/collect?measurement_id={MID}&api_secret={SECRET}"
+        requests.post(url, json=payload, timeout=2)
+except Exception:
+    pass
+
+# --- CSS for Vertical Alignment ---
+st.markdown("""
+<style>
+    div[data-testid="stHorizontalBlock"] {
+        align-items: center;
+    }
+</style>
+""", unsafe_allow_html=True)
 
 # # Pull from secrets
 # MID    = st.secrets["ga"]["measurement_id"]
@@ -172,36 +205,101 @@ st.divider()
 
 
 # --- Google Analytics Display Section ---
+# @st.cache_data(ttl=3600)
+# def get_analytics_data():
+#     """Fetches and parses visitor data from the Google Analytics Data API."""
+#     try:
+#         # --- CORRECTED SECRET ACCESS ---
+#         # Access the keys using the structure from your secrets file: [ga] and [ga.credentials]
+#         creds_dict = st.secrets["ga"]["credentials"]
+#         property_id = st.secrets["ga"]["property_id"]
+        
+#         credentials = service_account.Credentials.from_service_account_info(creds_dict)
+#         client = BetaAnalyticsDataClient(credentials=credentials)
+
+#         request = RunReportRequest(
+#             property=f"properties/{property_id}",
+#             dimensions=[{"name": "country"}],
+#             metrics=[{"name": "totalUsers"}],
+#             date_ranges=[{"start_date": "2024-01-01", "end_date": "today"}],
+#         )
+#         response = client.run_report(request)
+
+#         rows = [{'Country': row.dimension_values[0].value, 'Visitors': int(row.metric_values[0].value)} for row in response.rows]
+#         if not rows: return 0, 0, pd.DataFrame()
+
+#         df = pd.DataFrame(rows)
+#         return df['Visitors'].sum(), df['Country'].nunique(), df.nlargest(5, 'Visitors')
+#     except Exception as e:
+#         st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
+#         return 0, 0, pd.DataFrame()
+
+# st.divider()
+# st.header("🌎 Community Engagement")
+
+# total_users, total_countries, df_top_countries = get_analytics_data()
+
+# if total_users > 0:
+#     col_a, col_b = st.columns([1, 2], gap="large")
+#     with col_a:
+#         st.metric("Total Unique Viewers", f"{total_users:,}")
+#         st.metric("Countries Reached", total_countries)
+#     with col_b:
+#         fig = px.bar(df_top_countries.sort_values('Visitors', ascending=True), x='Visitors', y='Country', orientation='h', title='Top 5 Viewer Countries', text='Visitors', marker_color='#0072B2')
+#         fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
+#         st.plotly_chart(fig, use_container_width=True)
+# else:
+#     st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
+
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+# --- Google Analytics Display Section ---
 @st.cache_data(ttl=3600)
 def get_analytics_data():
-    """Fetches and parses visitor data from the Google Analytics Data API."""
+    """Fetches visitor data from Google Analytics Data API."""
     try:
-        # --- CORRECTED SECRET ACCESS ---
-        # Access the keys using the structure from your secrets file: [ga] and [ga.credentials]
+        # Access credentials from secrets
         creds_dict = st.secrets["ga"]["credentials"]
         property_id = st.secrets["ga"]["property_id"]
         
+        # Create credentials
         credentials = service_account.Credentials.from_service_account_info(creds_dict)
         client = BetaAnalyticsDataClient(credentials=credentials)
 
+        # Request for country-level data
         request = RunReportRequest(
             property=f"properties/{property_id}",
-            dimensions=[{"name": "country"}],
-            metrics=[{"name": "totalUsers"}],
-            date_ranges=[{"start_date": "2024-01-01", "end_date": "today"}],
+            dimensions=[Dimension(name="country")],
+            metrics=[Metric(name="totalUsers")],
+            date_ranges=[DateRange(start_date="2024-01-01", end_date="today")],
         )
         response = client.run_report(request)
 
-        rows = [{'Country': row.dimension_values[0].value, 'Visitors': int(row.metric_values[0].value)} for row in response.rows]
-        if not rows: return 0, 0, pd.DataFrame()
+        # Parse response
+        rows = []
+        for row in response.rows:
+            country = row.dimension_values[0].value
+            users = int(row.metric_values[0].value)
+            rows.append({'Country': country, 'Visitors': users})
+        
+        if not rows:
+            return 0, 0, pd.DataFrame()
 
         df = pd.DataFrame(rows)
-        return df['Visitors'].sum(), df['Country'].nunique(), df.nlargest(5, 'Visitors')
+        total_visitors = df['Visitors'].sum()
+        total_countries = df['Country'].nunique()
+        top_countries = df.nlargest(5, 'Visitors')
+        
+        return total_visitors, total_countries, top_countries
+        
     except Exception as e:
-        st.error(f"Failed to fetch analytics data. Please ensure secrets are configured correctly. Error: {e}")
+        st.error(f"Failed to fetch analytics data: {str(e)}")
         return 0, 0, pd.DataFrame()
 
-st.divider()
 st.header("🌎 Community Engagement")
 
 total_users, total_countries, df_top_countries = get_analytics_data()
@@ -209,11 +307,26 @@ total_users, total_countries, df_top_countries = get_analytics_data()
 if total_users > 0:
     col_a, col_b = st.columns([1, 2], gap="large")
     with col_a:
-        st.metric("Total Unique Viewers", f"{total_users:,}")
+        st.metric("Total Unique Visitors", f"{total_users:,}")
         st.metric("Countries Reached", total_countries)
     with col_b:
-        fig = px.bar(df_top_countries.sort_values('Visitors', ascending=True), x='Visitors', y='Country', orientation='h', title='Top 5 Viewer Countries', text='Visitors', marker_color='#0072B2')
-        fig.update_layout(showlegend=False, margin=dict(l=10, r=10, t=40, b=10), yaxis_title=None)
-        st.plotly_chart(fig, use_container_width=True)
+        if not df_top_countries.empty:
+            fig = px.bar(
+                df_top_countries.sort_values('Visitors', ascending=True),
+                x='Visitors',
+                y='Country',
+                orientation='h',
+                title='Top 5 Viewer Countries',
+                text='Visitors',
+                color_discrete_sequence=['#0072B2']
+            )
+            fig.update_layout(
+                showlegend=False,
+                margin=dict(l=10, r=10, t=40, b=10),
+                yaxis_title=None,
+                xaxis_title="Number of Visitors"
+            )
+            fig.update_traces(textposition='outside')
+            st.plotly_chart(fig, use_container_width=True)
 else:
     st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
