@@ -267,6 +267,20 @@ def get_analytics_data():
         # DEBUG: Check what's in secrets
         st.write("DEBUG: Checking secrets structure...")
         st.write("Keys in st.secrets:", list(st.secrets.keys()))
+
+        if "ga" in st.secrets:
+            st.write("Keys in st.secrets['ga']:", list(st.secrets["ga"].keys()))
+            st.write("Type of st.secrets['ga']:", type(st.secrets["ga"]))
+            
+            # Check if there's a 'credentials' key
+            if "credentials" in st.secrets["ga"]:
+                st.write("✅ credentials found!")
+                st.write("Keys in credentials:", list(st.secrets["ga"]["credentials"].keys()))
+            else:
+                st.write("❌ No 'credentials' key found in ga")
+                st.write("Available keys:", list(st.secrets["ga"].keys()))
+
+        
         # Check if credentials exist
         if "ga" not in st.secrets:
             st.warning("Google Analytics configuration not found in secrets.")
