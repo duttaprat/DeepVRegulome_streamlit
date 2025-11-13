@@ -24,6 +24,22 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
+@st.cache_data(ttl=3600)
+def get_analytics_data():
+    """Fetches visitor data from Google Analytics Data API."""
+    try:
+        # DEBUG: Check what's in secrets
+        st.write("DEBUG: Checking secrets structure...")
+        st.write("Keys in st.secrets:", list(st.secrets.keys()))
+        
+        if "ga" in st.secrets:
+            st.write("Keys in st.secrets['ga']:", list(st.secrets["ga"].keys()))
+            
+        # Check if credentials exist
+        if "ga" not in st.secrets:
+            st.warning("Google Analytics configuration not found in secrets.")
+            return 0, 0, pd.DataFrame()
+
 # --- Google Analytics Tracking (Measurement Protocol) ---
 try:
     if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
