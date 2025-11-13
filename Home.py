@@ -180,7 +180,7 @@ st.divider()
 
 
 
---- Google Analytics Display Section ---
+# --- Google Analytics Display Section ---
 @st.cache_data(ttl=3600)
 def get_analytics_data():
     """Fetches and parses visitor data from the Google Analytics Data API."""
