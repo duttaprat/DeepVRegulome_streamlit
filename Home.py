@@ -69,8 +69,8 @@ send_page_view()
 
 
 
---- Google Analytics Tracking Code (Server-Side) ---
-This uses the Measurement Protocol, which is robust and doesn't rely on browser scripts.
+# --- Google Analytics Tracking Code (Server-Side) ---
+# This uses the Measurement Protocol, which is robust and doesn't rely on browser scripts.
 try:
     if "ga" in st.secrets and "measurement_id" in st.secrets["ga"] and "api_secret" in st.secrets["ga"]:
         MID = st.secrets["ga"]["measurement_id"]
