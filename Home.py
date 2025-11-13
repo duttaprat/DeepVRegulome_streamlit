@@ -265,23 +265,22 @@ def get_analytics_data():
     """Fetches visitor data from Google Analytics Data API."""
     try:
         # DEBUG: Check what's in secrets
-        st.write("DEBUG: Checking secrets structure...")
+        st.write("🔍 DEBUG: Checking secrets structure...")
         st.write("Keys in st.secrets:", list(st.secrets.keys()))
 
         if "ga" in st.secrets:
-            st.write("Keys in st.secrets['ga']:", list(st.secrets["ga"].keys()))
-            st.write("Type of st.secrets['ga']:", type(st.secrets["ga"]))
+            ga_keys = list(st.secrets["ga"].keys())
+            st.write(f"✅ Found {len(ga_keys)} keys in st.secrets['ga']:", ga_keys)
             
-            # Check if there's a 'credentials' key
-            if "credentials" in st.secrets["ga"]:
-                st.write("✅ credentials found!")
-                st.write("Keys in credentials:", list(st.secrets["ga"]["credentials"].keys()))
+            # Check specifically for credential keys
+            credential_keys = [k for k in ga_keys if k.startswith('credentials_')]
+            if credential_keys:
+                st.write(f"✅ Found {len(credential_keys)} credential keys:", credential_keys)
             else:
-                st.write("❌ No 'credentials' key found in ga")
-                st.write("Available keys:", list(st.secrets["ga"].keys()))
-
-        
-        if "ga" not in st.secrets:
+                st.write("❌ No credential keys found (should start with 'credentials_')")
+                st.stop()
+        else:
+            st.error("❌ 'ga' section not found in secrets!")
             return 0, 0, pd.DataFrame()
         
         # Build credentials dict from flat structure
@@ -299,18 +298,34 @@ def get_analytics_data():
             "universe_domain": st.secrets["ga"].get("credentials_universe_domain", "googleapis.com")
         }
         
+        # Debug: Check if credentials were loaded
+        st.write("🔍 Checking loaded credentials:")
+        st.write(f"- project_id: {'✅ Found' if creds_dict['project_id'] else '❌ Missing'}")
+        st.write(f"- private_key: {'✅ Found' if creds_dict['private_key'] else '❌ Missing'}")
+        st.write(f"- client_email: {'✅ Found' if creds_dict['client_email'] else '❌ Missing'}")
+        
         # Check if we have the required credentials
         if not creds_dict["project_id"] or not creds_dict["private_key"]:
-            st.info("Google Analytics credentials are being configured. Check back soon!")
+            st.error("❌ Missing required credentials (project_id or private_key)")
+            st.info("Please add all credential fields to your secrets!")
             return 0, 0, pd.DataFrame()
         
-        property_id = st.secrets["ga"]["property_id"]
+        property_id = st.secrets["ga"].get("property_id")
+        if not property_id:
+            st.error("❌ property_id not found in secrets")
+            return 0, 0, pd.DataFrame()
+            
+        st.write(f"✅ property_id: {property_id}")
         
         # Create credentials
+        st.write("🔄 Creating service account credentials...")
         credentials = service_account.Credentials.from_service_account_info(creds_dict)
+        
+        st.write("🔄 Initializing Analytics client...")
         client = BetaAnalyticsDataClient(credentials=credentials)
 
         # Request for country-level data
+        st.write("🔄 Requesting analytics data...")
         request = RunReportRequest(
             property=f"properties/{property_id}",
             dimensions=[Dimension(name="country")],
@@ -320,6 +335,8 @@ def get_analytics_data():
         response = client.run_report(request)
 
         # Parse response
+        st.write(f"✅ Received {len(response.rows)} rows from Google Analytics")
+        
         rows = []
         for row in response.rows:
             country = row.dimension_values[0].value
@@ -327,6 +344,7 @@ def get_analytics_data():
             rows.append({'Country': country, 'Visitors': users})
         
         if not rows:
+            st.warning("No analytics data found for the date range")
             return 0, 0, pd.DataFrame()
 
         df = pd.DataFrame(rows)
@@ -334,8 +352,12 @@ def get_analytics_data():
         total_countries = df['Country'].nunique()
         top_countries = df.nlargest(5, 'Visitors')
         
+        st.success(f"✅ Successfully loaded analytics: {total_visitors} visitors from {total_countries} countries!")
+        
         return total_visitors, total_countries, top_countries
         
     except Exception as e:
-        st.error(f"Analytics error: {str(e)}")
+        st.error(f"❌ Analytics error: {str(e)}")
+        import traceback
+        st.code(traceback.format_exc())
         return 0, 0, pd.DataFrame()
