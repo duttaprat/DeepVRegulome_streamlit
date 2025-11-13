@@ -281,17 +281,29 @@ def get_analytics_data():
                 st.write("Available keys:", list(st.secrets["ga"].keys()))
 
         
-        # Check if credentials exist
         if "ga" not in st.secrets:
-            st.warning("Google Analytics configuration not found in secrets.")
             return 0, 0, pd.DataFrame()
         
-        if "credentials" not in st.secrets["ga"]:
-            st.warning("GA credentials not found. Please check your secrets configuration.")
+        # Build credentials dict from flat structure
+        creds_dict = {
+            "type": st.secrets["ga"].get("credentials_type", "service_account"),
+            "project_id": st.secrets["ga"].get("credentials_project_id"),
+            "private_key_id": st.secrets["ga"].get("credentials_private_key_id"),
+            "private_key": st.secrets["ga"].get("credentials_private_key"),
+            "client_email": st.secrets["ga"].get("credentials_client_email"),
+            "client_id": st.secrets["ga"].get("credentials_client_id"),
+            "auth_uri": st.secrets["ga"].get("credentials_auth_uri", "https://accounts.google.com/o/oauth2/auth"),
+            "token_uri": st.secrets["ga"].get("credentials_token_uri", "https://oauth2.googleapis.com/token"),
+            "auth_provider_x509_cert_url": st.secrets["ga"].get("credentials_auth_provider_x509_cert_url", "https://www.googleapis.com/oauth2/v1/certs"),
+            "client_x509_cert_url": st.secrets["ga"].get("credentials_client_x509_cert_url"),
+            "universe_domain": st.secrets["ga"].get("credentials_universe_domain", "googleapis.com")
+        }
+        
+        # Check if we have the required credentials
+        if not creds_dict["project_id"] or not creds_dict["private_key"]:
+            st.info("Google Analytics credentials are being configured. Check back soon!")
             return 0, 0, pd.DataFrame()
         
-        # Access credentials from secrets
-        creds_dict = dict(st.secrets["ga"]["credentials"])
         property_id = st.secrets["ga"]["property_id"]
         
         # Create credentials
@@ -325,36 +337,5 @@ def get_analytics_data():
         return total_visitors, total_countries, top_countries
         
     except Exception as e:
-        st.error(f"Failed to fetch analytics data: {str(e)}")
+        st.error(f"Analytics error: {str(e)}")
         return 0, 0, pd.DataFrame()
-
-st.header("🌎 Community Engagement")
-
-total_users, total_countries, df_top_countries = get_analytics_data()
-
-if total_users > 0:
-    col_a, col_b = st.columns([1, 2], gap="large")
-    with col_a:
-        st.metric("Total Unique Visitors", f"{total_users:,}")
-        st.metric("Countries Reached", total_countries)
-    with col_b:
-        if not df_top_countries.empty:
-            fig = px.bar(
-                df_top_countries.sort_values('Visitors', ascending=True),
-                x='Visitors',
-                y='Country',
-                orientation='h',
-                title='Top 5 Visitor Countries',
-                text='Visitors',
-                color_discrete_sequence=['#0072B2']
-            )
-            fig.update_layout(
-                showlegend=False,
-                margin=dict(l=10, r=10, t=40, b=10),
-                yaxis_title=None,
-                xaxis_title="Number of Visitors"
-            )
-            fig.update_traces(textposition='outside')
-            st.plotly_chart(fig, use_container_width=True)
-else:
-    st.info("Analytics data is still collecting. Please check back in 24-48 hours.")
