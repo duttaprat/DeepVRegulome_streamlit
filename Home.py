@@ -154,7 +154,17 @@ st.header("How to Cite")
 st.markdown("""
 If you use the data or models from this portal in your research, please cite our publication:
 
-**Dutta, P. et al. DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome. *Nature Methods* (Under Revision).**
+```
+@misc{dutta2025deepvregulomednabertbaseddeeplearningframework,
+      title={DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome}, 
+      author={Pratik Dutta and Matthew Obusan and Rekha Sathian and Max Chao and Pallavi Surana and Nimisha Papineni and Yanrong Ji and Zhihan Zhou and Han Liu and Alisa Yurovsky and Ramana V Davuluri},
+      year={2025},
+      eprint={2511.09026},
+      archivePrefix={arXiv},
+      primaryClass={q-bio.GN},
+      url={https://arxiv.org/abs/2511.09026}, 
+}
+```
 """)
 
 st.divider()
