@@ -262,8 +262,17 @@ st.divider()
 def get_analytics_data():
     """Fetches visitor data from Google Analytics Data API."""
     try:
+        # Check if credentials exist
+        if "ga" not in st.secrets:
+            st.warning("Google Analytics configuration not found in secrets.")
+            return 0, 0, pd.DataFrame()
+        
+        if "credentials" not in st.secrets["ga"]:
+            st.warning("GA credentials not found. Please check your secrets configuration.")
+            return 0, 0, pd.DataFrame()
+        
         # Access credentials from secrets
-        creds_dict = st.secrets["ga"]["credentials"]
+        creds_dict = dict(st.secrets["ga"]["credentials"])
         property_id = st.secrets["ga"]["property_id"]
         
         # Create credentials
@@ -275,7 +284,7 @@ def get_analytics_data():
             property=f"properties/{property_id}",
             dimensions=[Dimension(name="country")],
             metrics=[Metric(name="totalUsers")],
-            date_ranges=[DateRange(start_date="2024-01-01", end_date="today")],
+            date_ranges=[DateRange(start_date="2024-11-01", end_date="today")],
         )
         response = client.run_report(request)
 
@@ -316,7 +325,7 @@ if total_users > 0:
                 x='Visitors',
                 y='Country',
                 orientation='h',
-                title='Top 5 Viewer Countries',
+                title='Top 5 Visitor Countries',
                 text='Visitors',
                 color_discrete_sequence=['#0072B2']
             )
