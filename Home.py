@@ -25,7 +25,8 @@ st.set_page_config(
 )
 
 
-
+from ga_clientside import inject_ga
+inject_ga()
 
 
 # Pull from secrets
