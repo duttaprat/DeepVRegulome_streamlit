@@ -205,7 +205,7 @@ def render_community_engagement():
         if pypi.get("first_date"):
             ht += f" · since {pypi['first_date']}"
         st.metric(
-            "📦 PyPI installs (total)",
+            "📦 PyPI Package Downloads (total)",
             f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
             help=ht,
         )
