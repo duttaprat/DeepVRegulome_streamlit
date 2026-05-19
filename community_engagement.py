@@ -303,7 +303,7 @@ def render_community_engagement():
 
     with r1c3:
         adoption_card(
-            icon="👁️",
+            icon="📊",
             title="Page Views",
             value=f"{ga['page_views']:,}" if ga["ok"] else "—",
             subtitle="Total portal engagement",
