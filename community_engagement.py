@@ -205,19 +205,19 @@ def render_community_engagement():
         if pypi.get("first_date"):
             ht += f" · since {pypi['first_date']}"
         st.metric(
-            "PyPI installs (total)",
+            "📦 PyPI installs (total)",
             f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
             help=ht,
         )
     with r1c2:
         st.metric(
-            "Portal users (total)",
+            "👥 Portal users (total)",
             f"{ga['total_users']:,}" if ga["ok"] else "—",
             help="Unique users (Google Analytics, all time)",
         )
     with r1c3:
         st.metric(
-            "Portal page views (total)",
+            "👁️ Portal page views (total)",
             f"{ga['page_views']:,}" if ga["ok"] else "—",
             help="Total page views (Google Analytics, all time)",
         )
@@ -226,14 +226,14 @@ def render_community_engagement():
     r2c1, r2c2 = st.columns(2)
     with r2c1:
         st.metric(
-            "Hugging Face downloads (30 days)",
+            "🤗 Hugging Face downloads (30 days)",
             f"{hf['downloads']:,}" if hf["ok"] else "—",
             help=f"Model: {HF_MODEL} · Hugging Face reports a rolling "
                  "30-day count for models (no all-time figure available).",
         )
     with r2c2:
         st.metric(
-            "Citations",
+            "📄 Citations",
             f"{CITATIONS:,}",
             help="Manually maintained; Google Scholar blocks automated "
                  "fetching.",
