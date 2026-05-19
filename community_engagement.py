@@ -182,6 +182,21 @@ def _diagnostics_enabled() -> bool:
     except Exception:
         return False
 
+def adoption_card(icon, title, value, subtitle, accent):
+    st.markdown(
+        f"""
+        <div class="adoption-card" style="--accent:{accent};">
+            <div class="adoption-top">
+                <div class="adoption-icon">{icon}</div>
+                <div class="adoption-title">{title}</div>
+            </div>
+            <div class="adoption-value">{value}</div>
+            <div class="adoption-subtitle">{subtitle}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
 
 def render_community_engagement():
     st.divider()
@@ -196,18 +211,86 @@ def render_community_engagement():
     hf = fetch_hf_downloads(HF_MODEL)
     ga = fetch_ga4_totals()
 
+    st.markdown(
+        """
+        <style>
+        .adoption-card {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            border: 1px solid #e5e7eb;
+            border-left: 6px solid var(--accent);
+            border-radius: 20px;
+            padding: 20px 22px;
+            min-height: 155px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .adoption-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.13);
+        }
+
+        .adoption-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .adoption-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .adoption-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.2;
+        }
+
+        .adoption-value {
+            font-size: 38px;
+            font-weight: 850;
+            color: #0f172a;
+            letter-spacing: -1px;
+            margin-bottom: 6px;
+        }
+
+        .adoption-subtitle {
+            font-size: 12.5px;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        @media (max-width: 768px) {
+            .adoption-card {
+                margin-bottom: 14px;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
+    
+
     # ---- Row 1 ----
     r1c1, r1c2, r1c3 = st.columns(3)
     with r1c1:
-        ht = f"Package: {PYPI_PACKAGE}"
-        if pypi.get("version"):
-            ht += f" · v{pypi['version']}"
-        if pypi.get("first_date"):
-            ht += f" · since {pypi['first_date']}"
-        st.metric(
-            "📦 PyPI installs (total)",
-            f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
-            help=ht,
+        adoption_card(
+            icon="📦",
+            title="PyPI Downloads",
+            value=f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
+            subtitle="Total package downloads",
+            accent="#6366f1",
         )
     with r1c2:
         st.metric(
