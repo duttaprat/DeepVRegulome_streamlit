@@ -293,11 +293,19 @@ def render_community_engagement():
             accent="#6366f1",
         )
     with r1c2:
-        st.metric(
-            "👥 Portal users (total)",
-            f"{ga['total_users']:,}" if ga["ok"] else "—",
-            help="Unique users (Google Analytics, all time)",
+        adoption_card(
+            icon="👥",
+            title="Portal Users",
+            value=f"{ga['total_users']:,}" if ga["ok"] else "—",
+            subtitle="Unique visitors tracked by GA4",
+            accent="#10b981",
         )
+    # with r1c2:
+    #     st.metric(
+    #         "👥 Portal users (total)",
+    #         f"{ga['total_users']:,}" if ga["ok"] else "—",
+    #         help="Unique users (Google Analytics, all time)",
+    #     )
     with r1c3:
         st.metric(
             "👁️ Portal page views (total)",
