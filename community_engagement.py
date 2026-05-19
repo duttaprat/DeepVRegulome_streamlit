@@ -300,34 +300,34 @@ def render_community_engagement():
             subtitle="Unique visitors tracked by GA4",
             accent="#10b981",
         )
-    # with r1c2:
-    #     st.metric(
-    #         "👥 Portal users (total)",
-    #         f"{ga['total_users']:,}" if ga["ok"] else "—",
-    #         help="Unique users (Google Analytics, all time)",
-    #     )
+
     with r1c3:
-        st.metric(
-            "👁️ Portal page views (total)",
-            f"{ga['page_views']:,}" if ga["ok"] else "—",
-            help="Total page views (Google Analytics, all time)",
+        adoption_card(
+            icon="👁️",
+            title="Page Views",
+            value=f"{ga['page_views']:,}" if ga["ok"] else "—",
+            subtitle="Total portal engagement",
+            accent="#f59e0b",
         )
 
     # ---- Row 2 ----
     r2c1, r2c2 = st.columns(2)
     with r2c1:
-        st.metric(
-            "🤗 Hugging Face downloads (30 days)",
-            f"{hf['downloads']:,}" if hf["ok"] else "—",
-            help=f"Model: {HF_MODEL} · Hugging Face reports a rolling "
-                 "30-day count for models (no all-time figure available).",
+        adoption_card(
+            icon="🤗",
+            title="Hugging Face Downloads",
+            value=f"{hf['downloads']:,}" if hf["ok"] else "—",
+            subtitle="Rolling 30-day model downloads",
+            accent="#ec4899",
         )
+
     with r2c2:
-        st.metric(
-            "📄 Citations",
-            f"{CITATIONS:,}",
-            help="Manually maintained; Google Scholar blocks automated "
-                 "fetching.",
+        adoption_card(
+            icon="📄",
+            title="Research Citations",
+            value=f"{CITATIONS:,}",
+            subtitle="Manually updated citation count",
+            accent="#8b5cf6",
         )
 
     if pypi["ok"] and pypi.get("first_date"):
