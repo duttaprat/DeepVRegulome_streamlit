@@ -3,28 +3,24 @@ community_engagement.py
 -----------------------
 Community Engagement panel for the DeepVRegulome portal.
 
-Replaces the old get_analytics_data() that crashed on a missing
-st.secrets["ga"]["credentials"] key.
-
-LAYOUT (final):
+LAYOUT:
   Row 1 (3 tiles): PyPI installs (total) | Portal users | Portal page views
   Row 2 (2 tiles): Hugging Face downloads (30d) | Citations
   Then: DNABERT-2 foundation-model lineage callout.
 
-NOTES / HONEST CONSTRAINTS:
-  - PyPI total is a true cumulative count (pypistats serves the full
-    daily series; deepvregulome is younger than the retention window).
-  - Hugging Face exposes ONLY a rolling 30-day download count for this
-    model (the API's all-time field is null for it). It is labelled
-    honestly as 30-day; there is no reliable way to get an HF total.
-  - Portal users / page views come live from the GA4 Data API and need a
-    service-account block in secrets ([ga.credentials] + property_id).
-    Until that is added, those two tiles show "—". Everything else still
-    works with zero credentials.
-  - CITATIONS is a manual constant. Google Scholar blocks automated
-    fetching, so bump this by hand when the count changes.
-  - No country chart, no GitHub tile, no copy-summary expander
-    (intentionally removed).
+WHY TILES MIGHT BE BLANK ("—"):
+  - PyPI: pypistats.org throttles some cloud IPs (esp. requests with no
+    User-Agent). This version sends a real UA and retries once. If it
+    still fails, the diagnostics panel (below) shows the exact reason.
+  - Portal users / page views: these need the GA4 service-account block
+    in secrets ([ga.credentials] + property_id). Blank here means that
+    block is absent or invalid. This is expected until you add it.
+  - HF / Citations / lineage: no credentials needed; should always show.
+
+DIAGNOSTICS:
+  Set SHOW_DIAGNOSTICS = True (or add to secrets: [debug] community = true)
+  to render a small expander explaining the status of every data source.
+  Leave it False for the public portal.
 
 Usage in Home.py:
     from community_engagement import render_community_engagement
@@ -46,71 +42,102 @@ HF_LINEAGE = "zhihan1996/DNABERT-2-117M"  # co-authored foundation model
 # Manual count: Google Scholar blocks automated fetching. Update by hand.
 CITATIONS = 1
 
-REQUEST_TIMEOUT = 6
+# Flip to True to see why any tile is blank. Keep False for visitors.
+SHOW_DIAGNOSTICS = False
+
+REQUEST_TIMEOUT = 8
+# A real User-Agent matters: pypistats and some APIs throttle or reject
+# requests that arrive with the default python-requests UA, which is a
+# common reason a call works locally but returns "—" on Streamlit Cloud.
+HEADERS = {
+    "User-Agent": "DeepVRegulome-Portal/1.0 (research; contact via GitHub)",
+    "Accept": "application/json",
+}
+
+
+def _get(url, params=None):
+    """GET with UA + one retry. Returns (response_or_None, error_string)."""
+    last_err = ""
+    for attempt in range(2):
+        try:
+            r = requests.get(
+                url, params=params, headers=HEADERS, timeout=REQUEST_TIMEOUT
+            )
+            if r.status_code == 200:
+                return r, ""
+            last_err = f"HTTP {r.status_code}"
+        except Exception as e:
+            last_err = f"{type(e).__name__}: {e}"
+    return None, last_err
 
 
 # ---------------------------------------------------------------------------
-# DATA FETCHERS  (cached; each fails soft)
+# DATA FETCHERS  (cached; each records a status for diagnostics)
 # ---------------------------------------------------------------------------
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_pypi_total(package: str) -> dict:
-    """True cumulative install count via pypistats `overall` series."""
     out = {"ok": False, "total": 0, "version": None,
-           "first_date": None, "last_date": None}
+           "first_date": None, "last_date": None, "status": ""}
+    r, err = _get(
+        f"https://pypistats.org/api/packages/{package}/overall",
+        params={"mirrors": "false"},
+    )
+    if r is None:
+        out["status"] = f"pypistats overall failed: {err}"
+        return out
     try:
-        ro = requests.get(
-            f"https://pypistats.org/api/packages/{package}/overall",
-            params={"mirrors": "false"},
-            timeout=REQUEST_TIMEOUT,
-        )
-        if ro.status_code == 200:
-            series = ro.json().get("data", [])
-            if series:
-                out["total"] = sum(x["downloads"] for x in series)
-                dates = sorted(x["date"] for x in series)
-                out["first_date"], out["last_date"] = dates[0], dates[-1]
-                out["ok"] = True
-        rv = requests.get(
-            f"https://pypi.org/pypi/{package}/json", timeout=REQUEST_TIMEOUT
-        )
-        if rv.status_code == 200:
+        series = r.json().get("data", [])
+        if series:
+            out["total"] = sum(x["downloads"] for x in series)
+            dates = sorted(x["date"] for x in series)
+            out["first_date"], out["last_date"] = dates[0], dates[-1]
+            out["ok"] = True
+            out["status"] = "ok"
+        else:
+            out["status"] = "pypistats returned no data rows"
+    except Exception as e:
+        out["status"] = f"pypistats parse error: {e}"
+
+    rv, _ = _get(f"https://pypi.org/pypi/{package}/json")
+    if rv is not None:
+        try:
             out["version"] = rv.json()["info"]["version"]
-    except Exception:
-        pass
+        except Exception:
+            pass
     return out
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_hf_downloads(model_id: str) -> dict:
-    """Rolling 30-day download count for one HF model (no auth)."""
-    out = {"ok": False, "downloads": 0}
+    out = {"ok": False, "downloads": 0, "status": ""}
+    r, err = _get(f"https://huggingface.co/api/models/{model_id}")
+    if r is None:
+        out["status"] = f"HF failed: {err}"
+        return out
     try:
-        r = requests.get(
-            f"https://huggingface.co/api/models/{model_id}",
-            timeout=REQUEST_TIMEOUT,
-        )
-        if r.status_code == 200:
-            out.update(ok=True,
-                       downloads=r.json().get("downloads", 0) or 0)
-    except Exception:
-        pass
+        out["downloads"] = r.json().get("downloads", 0) or 0
+        out["ok"] = True
+        out["status"] = "ok"
+    except Exception as e:
+        out["status"] = f"HF parse error: {e}"
     return out
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_ga4_totals():
-    """
-    Live portal users + page views from the GA4 Data API.
-
-    Returns None if the service-account block is absent in secrets, so
-    the tiles degrade to "—" instead of erroring. Never raises.
-    """
+    """Live portal users + page views. Returns dict with 'status'."""
+    out = {"ok": False, "total_users": 0, "page_views": 0, "status": ""}
     try:
         if "ga" not in st.secrets:
-            return None
+            out["status"] = "no [ga] section in secrets"
+            return out
         ga = st.secrets["ga"]
         if "credentials" not in ga or "property_id" not in ga:
-            return None
+            out["status"] = (
+                "missing [ga.credentials] and/or property_id in secrets "
+                "(GA4 service account not set up yet)"
+            )
+            return out
 
         from google.analytics.data_v1beta import BetaAnalyticsDataClient
         from google.analytics.data_v1beta.types import (
@@ -131,19 +158,31 @@ def fetch_ga4_totals():
         )
         resp = client.run_report(req)
         if not resp.rows:
-            return None
-        return {
-            "ok": True,
-            "total_users": int(resp.rows[0].metric_values[0].value),
-            "page_views": int(resp.rows[0].metric_values[1].value),
-        }
-    except Exception:
-        return None
+            out["status"] = "GA4 returned no rows"
+            return out
+        out.update(
+            ok=True,
+            total_users=int(resp.rows[0].metric_values[0].value),
+            page_views=int(resp.rows[0].metric_values[1].value),
+            status="ok",
+        )
+    except Exception as e:
+        out["status"] = f"GA4 error: {type(e).__name__}: {e}"
+    return out
 
 
 # ---------------------------------------------------------------------------
 # RENDERER
 # ---------------------------------------------------------------------------
+def _diagnostics_enabled() -> bool:
+    if SHOW_DIAGNOSTICS:
+        return True
+    try:
+        return bool(st.secrets["debug"]["community"])
+    except Exception:
+        return False
+
+
 def render_community_engagement():
     st.divider()
     st.header("🌎 Community Engagement & Adoption")
@@ -157,7 +196,7 @@ def render_community_engagement():
     hf = fetch_hf_downloads(HF_MODEL)
     ga = fetch_ga4_totals()
 
-    # ---- Row 1: PyPI total | Portal users | Portal page views ----
+    # ---- Row 1 ----
     r1c1, r1c2, r1c3 = st.columns(3)
     with r1c1:
         ht = f"Package: {PYPI_PACKAGE}"
@@ -173,17 +212,17 @@ def render_community_engagement():
     with r1c2:
         st.metric(
             "Portal users (total)",
-            f"{ga['total_users']:,}" if ga and ga.get("ok") else "—",
+            f"{ga['total_users']:,}" if ga["ok"] else "—",
             help="Unique users (Google Analytics, all time)",
         )
     with r1c3:
         st.metric(
             "Portal page views (total)",
-            f"{ga['page_views']:,}" if ga and ga.get("ok") else "—",
+            f"{ga['page_views']:,}" if ga["ok"] else "—",
             help="Total page views (Google Analytics, all time)",
         )
 
-    # ---- Row 2: HF downloads (30d) | Citations ----
+    # ---- Row 2 ----
     r2c1, r2c2 = st.columns(2)
     with r2c1:
         st.metric(
@@ -217,3 +256,16 @@ def render_community_engagement():
             "days.",
             icon="🧬",
         )
+
+    # ---- Optional diagnostics (hidden from visitors) ----
+    if _diagnostics_enabled():
+        with st.expander("🔧 Data source diagnostics", expanded=True):
+            st.write("**PyPI:**", pypi.get("status") or "unknown")
+            st.write("**Hugging Face (model):**", hf.get("status"))
+            st.write("**Hugging Face (lineage):**", lin.get("status"))
+            st.write("**GA4 portal:**", ga.get("status"))
+            st.caption(
+                "Each fetch is cached for 1 hour. After fixing a cause "
+                "(e.g. adding GA4 secrets), reboot the app or clear cache "
+                "so the fix takes effect immediately."
+            )
