@@ -1,23 +1,25 @@
 """
 community_engagement.py
 -----------------------
-Drop-in Community Engagement panel for the DeepVRegulome portal.
+Community Engagement panel for the DeepVRegulome portal.
 
-WHY THIS EXISTS
-The old get_analytics_data() in Home.py tried to read
-st.secrets["ga"]["credentials"] and st.secrets["ga"]["property_id"].
-Neither key exists in secrets.toml, so the panel always errored out
-("st.secrets has no key 'credentials'").
+Replaces the old get_analytics_data() that crashed on a missing
+st.secrets["ga"]["credentials"] key.
 
-This module replaces that with adoption metrics that need NO credentials
-and are far stronger evidence of scientific uptake than portal page views:
-  - PyPI download counts for the `deepvregulome` package
-  - Hugging Face download counts for the hosted models
-  - GitHub stars / forks for the public repo
+Scope: DeepVRegulome ONLY (PyPI package + its HF model + GitHub repo)
+plus Google Analytics 4 portal usage.
 
-GA4 country data is kept OPTIONAL and OFF by default. It only activates
-if a valid service-account block is present in secrets. The panel never
-crashes when it is absent; it just shows the sources that do work.
+Shows EVERYTHING that is trackable so the metrics can be cherry-picked
+later for grants / CV:
+  - PyPI total installs (full lifetime) + recent windows
+  - Hugging Face model downloads (DeepVRegulome) + DNABERT-2 lineage
+  - GitHub stars / forks
+  - GA4 total users + page views (valid NOW, even before geo resolves)
+  - GA4 country breakdown (fills in once client-side gtag.js propagates)
+
+GA4 read-back needs a service-account block in secrets ([ga.credentials]
++ property_id). If absent, the GA4 section is skipped silently; the rest
+of the panel still works with zero credentials.
 
 Usage in Home.py:
     from community_engagement import render_community_engagement
@@ -30,27 +32,26 @@ import requests
 import streamlit as st
 
 # ---------------------------------------------------------------------------
-# CONFIG: edit these if package / repo names ever change
+# CONFIG  (DeepVRegulome only)
 # ---------------------------------------------------------------------------
-PYPI_PACKAGE = "deepvregulome"
+PYPI_PACKAGE = "deepvregulome"          # https://pypi.org/project/deepvregulome/
 GITHUB_REPO = "DavuluriLab/DeepVRegulome"
-HF_MODELS = [
-    "duttaprat/DeepVRegulome",
-    "duttaprat/HViLM-base",
-]
-# DNABERT-2 is co-authored; shown separately as "foundation model lineage".
-HF_LINEAGE = ["zhihan1996/DNABERT-2-117M"]
+HF_MODEL = "duttaprat/DeepVRegulome"
+HF_LINEAGE = "zhihan1996/DNABERT-2-117M"  # co-authored foundation model
 
-REQUEST_TIMEOUT = 6  # seconds; keep short so the page never hangs
+REQUEST_TIMEOUT = 6
 
 
 # ---------------------------------------------------------------------------
-# DATA FETCHERS  (each is independently cached and fails soft)
+# DATA FETCHERS  (cached; each fails soft)
 # ---------------------------------------------------------------------------
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_pypi_stats(package: str) -> dict:
-    """Recent download counts from pypistats.org (no auth required)."""
-    out = {"ok": False, "last_day": 0, "last_week": 0, "last_month": 0, "version": None}
+    out = {
+        "ok": False, "version": None,
+        "last_day": 0, "last_week": 0, "last_month": 0,
+        "total": 0, "first_date": None, "last_date": None,
+    }
     try:
         r = requests.get(
             f"https://pypistats.org/api/packages/{package}/recent",
@@ -64,7 +65,18 @@ def fetch_pypi_stats(package: str) -> dict:
                 last_week=d.get("last_week", 0),
                 last_month=d.get("last_month", 0),
             )
-        # version is a nice-to-have, separate endpoint
+        ro = requests.get(
+            f"https://pypistats.org/api/packages/{package}/overall",
+            params={"mirrors": "false"},
+            timeout=REQUEST_TIMEOUT,
+        )
+        if ro.status_code == 200:
+            series = ro.json().get("data", [])
+            if series:
+                out["total"] = sum(x["downloads"] for x in series)
+                dates = sorted(x["date"] for x in series)
+                out["first_date"], out["last_date"] = dates[0], dates[-1]
+                out["ok"] = True
         rv = requests.get(
             f"https://pypi.org/pypi/{package}/json", timeout=REQUEST_TIMEOUT
         )
@@ -77,8 +89,7 @@ def fetch_pypi_stats(package: str) -> dict:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_hf_model(model_id: str) -> dict:
-    """All-time + 30-day download counts for one HF model (no auth required)."""
-    out = {"ok": False, "id": model_id, "downloads": 0, "downloads_30d": 0, "likes": 0}
+    out = {"ok": False, "id": model_id, "downloads": 0, "likes": 0}
     try:
         r = requests.get(
             f"https://huggingface.co/api/models/{model_id}",
@@ -89,7 +100,6 @@ def fetch_hf_model(model_id: str) -> dict:
             out.update(
                 ok=True,
                 downloads=d.get("downloads", 0) or 0,
-                downloads_30d=d.get("downloadsAllTime", 0) or d.get("downloads", 0) or 0,
                 likes=d.get("likes", 0) or 0,
             )
     except Exception:
@@ -99,8 +109,7 @@ def fetch_hf_model(model_id: str) -> dict:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_github_stats(repo: str) -> dict:
-    """Stars / forks for the public repo (unauth: 60 req/hr, fine with caching)."""
-    out = {"ok": False, "stars": 0, "forks": 0, "open_issues": 0}
+    out = {"ok": False, "stars": 0, "forks": 0}
     try:
         r = requests.get(
             f"https://api.github.com/repos/{repo}",
@@ -109,30 +118,30 @@ def fetch_github_stats(repo: str) -> dict:
         )
         if r.status_code == 200:
             d = r.json()
-            out.update(
-                ok=True,
-                stars=d.get("stargazers_count", 0),
-                forks=d.get("forks_count", 0),
-                open_issues=d.get("open_issues_count", 0),
-            )
+            out.update(ok=True,
+                       stars=d.get("stargazers_count", 0),
+                       forks=d.get("forks_count", 0))
     except Exception:
         pass
     return out
 
 
 @st.cache_data(ttl=3600, show_spinner=False)
-def fetch_ga4_countries():
+def fetch_ga4():
     """
-    OPTIONAL. Returns (total_users, n_countries, top5_df) ONLY if a full
-    service-account block exists in secrets. Returns None otherwise so the
-    caller can simply skip the map. Never raises.
+    Returns a dict with GA4 portal metrics, or None if not configured.
+
+    total_users / page_views are valid immediately (they do not depend on
+    geo). countries_df may be mostly "(not set)" until client-side gtag.js
+    propagates; the renderer handles that case explicitly rather than
+    showing an empty map.
     """
     try:
         if "ga" not in st.secrets:
             return None
         ga = st.secrets["ga"]
         if "credentials" not in ga or "property_id" not in ga:
-            return None  # not configured -> silently skip, no error shown
+            return None
 
         from google.analytics.data_v1beta import BetaAnalyticsDataClient
         from google.analytics.data_v1beta.types import (
@@ -144,24 +153,50 @@ def fetch_ga4_countries():
             dict(ga["credentials"])
         )
         client = BetaAnalyticsDataClient(credentials=creds)
-        req = RunReportRequest(
-            property=f"properties/{ga['property_id']}",
+        pid = ga["property_id"]
+
+        # Totals (no geo dependency) -> valid right now.
+        totals_req = RunReportRequest(
+            property=f"properties/{pid}",
+            metrics=[Metric(name="totalUsers"), Metric(name="screenPageViews")],
+            date_ranges=[DateRange(start_date="2024-01-01", end_date="today")],
+        )
+        tr = client.run_report(totals_req)
+        total_users = page_views = 0
+        if tr.rows:
+            total_users = int(tr.rows[0].metric_values[0].value)
+            page_views = int(tr.rows[0].metric_values[1].value)
+
+        # Country breakdown.
+        ctry_req = RunReportRequest(
+            property=f"properties/{pid}",
             dimensions=[Dimension(name="country")],
             metrics=[Metric(name="totalUsers")],
             date_ranges=[DateRange(start_date="2024-01-01", end_date="today")],
         )
-        resp = client.run_report(req)
+        cr = client.run_report(ctry_req)
         rows = [
-            {"Country": row.dimension_values[0].value,
-             "Visitors": int(row.metric_values[0].value)}
-            for row in resp.rows
+            {"Country": r.dimension_values[0].value or "(not set)",
+             "Visitors": int(r.metric_values[0].value)}
+            for r in cr.rows
         ]
-        if not rows:
-            return None
-        df = pd.DataFrame(rows)
-        return df["Visitors"].sum(), df["Country"].nunique(), df.nlargest(5, "Visitors")
+        cdf = pd.DataFrame(rows) if rows else pd.DataFrame(
+            columns=["Country", "Visitors"]
+        )
+        # Real (geo-resolved) rows = anything not "(not set)".
+        resolved = cdf[cdf["Country"] != "(not set)"] if not cdf.empty \
+            else cdf
+
+        return {
+            "ok": True,
+            "total_users": total_users,
+            "page_views": page_views,
+            "countries_all": cdf,
+            "countries_resolved": resolved,
+            "n_countries_resolved": int(resolved["Country"].nunique())
+            if not resolved.empty else 0,
+        }
     except Exception:
-        # Any failure -> behave exactly as "not configured". No scary red box.
         return None
 
 
@@ -172,34 +207,39 @@ def render_community_engagement():
     st.divider()
     st.header("🌎 Community Engagement & Adoption")
     st.caption(
-        "Live adoption metrics across PyPI, Hugging Face, and GitHub. "
-        f"Auto-refreshed hourly · last loaded {datetime.date.today().isoformat()}."
+        "Live DeepVRegulome adoption across PyPI, Hugging Face, GitHub, and "
+        f"the portal (Google Analytics). Refreshed hourly · "
+        f"{datetime.date.today().isoformat()}."
     )
 
     pypi = fetch_pypi_stats(PYPI_PACKAGE)
     gh = fetch_github_stats(GITHUB_REPO)
-    hf_models = [fetch_hf_model(m) for m in HF_MODELS]
-    hf_total = sum(m["downloads"] for m in hf_models if m["ok"])
+    hf = fetch_hf_model(HF_MODEL)
+    ga = fetch_ga4()
 
     # ---- Headline metrics ----
     c1, c2, c3, c4 = st.columns(4)
     with c1:
+        ht = f"Package: {PYPI_PACKAGE}"
+        if pypi.get("version"):
+            ht += f" · v{pypi['version']}"
+        if pypi.get("first_date"):
+            ht += f" · since {pypi['first_date']}"
         st.metric(
-            "PyPI installs (30 days)",
-            f"{pypi['last_month']:,}" if pypi["ok"] else "—",
-            help=f"Package: {PYPI_PACKAGE}"
-            + (f" · v{pypi['version']}" if pypi.get("version") else ""),
+            "PyPI installs (total)",
+            f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
+            help=ht,
         )
     with c2:
         st.metric(
-            "PyPI installs (7 days)",
-            f"{pypi['last_week']:,}" if pypi["ok"] else "—",
+            "PyPI installs (30 days)",
+            f"{pypi['last_month']:,}" if pypi["ok"] else "—",
         )
     with c3:
         st.metric(
-            "Hugging Face downloads",
-            f"{hf_total:,}" if any(m["ok"] for m in hf_models) else "—",
-            help="Combined across hosted DeepVRegulome / HViLM models",
+            "Hugging Face downloads (30d)",
+            f"{hf['downloads']:,}" if hf["ok"] else "—",
+            help=f"Model: {HF_MODEL}",
         )
     with c4:
         st.metric(
@@ -208,94 +248,89 @@ def render_community_engagement():
             help=f"{GITHUB_REPO} · {gh['forks']} forks" if gh["ok"] else None,
         )
 
-    # ---- Per-model HF breakdown ----
-    rows = []
-    for m in hf_models:
-        if m["ok"]:
-            rows.append(
-                {"Model": m["id"], "Downloads": m["downloads"], "Likes": m["likes"]}
-            )
-    if rows:
-        st.markdown("**Hosted model downloads (Hugging Face)**")
-        df = pd.DataFrame(rows).sort_values("Downloads", ascending=False)
-        try:
-            import plotly.express as px
+    if pypi["ok"] and pypi.get("first_date"):
+        st.caption(
+            f"PyPI cumulative total spans {pypi['first_date']} → "
+            f"{pypi['last_date']} (the package's full lifetime; published "
+            "March 2026)."
+        )
 
-            fig = px.bar(
-                df.sort_values("Downloads"),
-                x="Downloads",
-                y="Model",
-                orientation="h",
-                text="Downloads",
-            )
-            fig.update_traces(marker_color="#0072B2", textposition="outside")
-            fig.update_layout(
-                showlegend=False,
-                margin=dict(l=10, r=10, t=10, b=10),
-                yaxis_title=None,
-                height=180 + 40 * len(df),
-            )
-            st.plotly_chart(fig, use_container_width=True)
-        except Exception:
-            st.dataframe(df, use_container_width=True, hide_index=True)
-
-    # ---- Foundation-model lineage (DNABERT-2, co-authored) ----
-    lineage = [fetch_hf_model(m) for m in HF_LINEAGE]
-    lin_ok = [m for m in lineage if m["ok"]]
-    if lin_ok:
-        names = ", ".join(m["id"] for m in lin_ok)
-        total = sum(m["downloads"] for m in lin_ok)
+    # ---- Foundation-model lineage ----
+    lin = fetch_hf_model(HF_LINEAGE)
+    if lin["ok"]:
         st.info(
             f"**Foundation-model lineage:** DeepVRegulome is built on "
-            f"DNABERT, whose successor DNABERT-2 ({names}) has "
-            f"{total:,} downloads on Hugging Face.",
+            f"DNABERT; its successor DNABERT-2 ({HF_LINEAGE}) has "
+            f"{lin['downloads']:,} Hugging Face downloads in the last 30 "
+            "days.",
             icon="🧬",
         )
 
-    # ---- OPTIONAL GA4 country map (only if fully configured) ----
-    ga = fetch_ga4_countries()
-    if ga is not None:
-        total_users, n_countries, top5 = ga
-        st.markdown("**Portal global reach (Google Analytics)**")
-        gcol1, gcol2 = st.columns([1, 2], gap="large")
-        with gcol1:
-            st.metric("Portal visitors", f"{total_users:,}")
-            st.metric("Countries reached", n_countries)
-        with gcol2:
+    # ---- GA4 portal usage ----
+    if ga and ga.get("ok"):
+        st.markdown("### Portal usage (Google Analytics)")
+        g1, g2 = st.columns(2)
+        with g1:
+            st.metric("Portal users (all time)", f"{ga['total_users']:,}")
+        with g2:
+            st.metric("Page views (all time)", f"{ga['page_views']:,}")
+
+        n_resolved = ga["n_countries_resolved"]
+        resolved = ga["countries_resolved"]
+        if n_resolved > 0 and not resolved.empty:
+            st.markdown(f"**Geographic reach: {n_resolved} countries**")
+            top = resolved.nlargest(8, "Visitors")
             try:
                 import plotly.express as px
 
                 fig = px.bar(
-                    top5.sort_values("Visitors"),
-                    x="Visitors",
-                    y="Country",
-                    orientation="h",
+                    top.sort_values("Visitors"),
+                    x="Visitors", y="Country", orientation="h",
                     text="Visitors",
                 )
-                fig.update_traces(marker_color="#009E73", textposition="outside")
+                fig.update_traces(marker_color="#009E73",
+                                   textposition="outside")
                 fig.update_layout(
                     showlegend=False,
                     margin=dict(l=10, r=10, t=10, b=10),
                     yaxis_title=None,
+                    height=160 + 34 * len(top),
                 )
                 st.plotly_chart(fig, use_container_width=True)
             except Exception:
-                st.dataframe(top5, use_container_width=True, hide_index=True)
+                st.dataframe(top, use_container_width=True, hide_index=True)
+        else:
+            st.warning(
+                "Country data is not resolved yet. The portal still uses "
+                "server-side tracking, so GA4 cannot geo-locate visitors "
+                "(all show as '(not set)'). Once the client-side gtag.js "
+                "snippet has been live for a few days, this fills in "
+                "automatically. User and page-view totals above are "
+                "accurate now.",
+                icon="🌍",
+            )
 
-    # ---- Grant/CV-ready summary line ----
+    # ---- Grant / CV-ready summary ----
     bits = []
+    if pypi["ok"] and pypi["total"]:
+        bits.append(f"{pypi['total']:,} total PyPI installs")
     if pypi["ok"]:
-        bits.append(f"{pypi['last_month']:,} PyPI installs in the last 30 days")
-    if any(m["ok"] for m in hf_models):
-        bits.append(f"{hf_total:,} Hugging Face model downloads")
+        bits.append(f"{pypi['last_month']:,} PyPI installs in the trailing "
+                     "30 days")
+    if hf["ok"] and hf["downloads"]:
+        bits.append(f"{hf['downloads']:,} Hugging Face downloads (30d)")
     if gh["ok"]:
         bits.append(f"{gh['stars']:,} GitHub stars")
+    if ga and ga.get("ok"):
+        bits.append(f"{ga['total_users']:,} portal users / "
+                     f"{ga['page_views']:,} page views")
+        if ga["n_countries_resolved"] > 0:
+            bits.append(f"reaching {ga['n_countries_resolved']} countries")
     if bits:
         with st.expander("📋 Copy adoption summary (for grants / CV)"):
             st.code(
-                "DeepVRegulome adoption (as of "
+                f"DeepVRegulome adoption (as of "
                 f"{datetime.date.today().isoformat()}): "
-                + "; ".join(bits)
-                + ".",
+                + "; ".join(bits) + ".",
                 language="text",
             )
