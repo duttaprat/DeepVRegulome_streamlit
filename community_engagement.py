@@ -323,7 +323,7 @@ def render_community_engagement():
 
     with r2c2:
         adoption_card(
-            icon="📄",
+            icon="🎓",
             title="Research Citations",
             value=f"{CITATIONS:,}",
             subtitle="Manually updated citation count",
