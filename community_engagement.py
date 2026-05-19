@@ -6,20 +6,22 @@ Community Engagement panel for the DeepVRegulome portal.
 Replaces the old get_analytics_data() that crashed on a missing
 st.secrets["ga"]["credentials"] key.
 
-Scope: DeepVRegulome ONLY (PyPI package + its HF model + GitHub repo)
-plus Google Analytics 4 portal usage.
+DESIGN DECISION (final):
+GA4 country data is unreliable on Streamlit Community Cloud (the hosting
+proxy + iframe sandbox mean the visitor's real IP rarely reaches GA4, so
+the Country dimension stays "(not set)"). Rather than show a broken or
+empty map, this panel presents the metrics that ARE reliable and strong:
 
-Shows EVERYTHING that is trackable so the metrics can be cherry-picked
-later for grants / CV:
-  - PyPI total installs (full lifetime) + recent windows
-  - Hugging Face model downloads (DeepVRegulome) + DNABERT-2 lineage
-  - GitHub stars / forks
-  - GA4 total users + page views (valid NOW, even before geo resolves)
-  - GA4 country breakdown (fills in once client-side gtag.js propagates)
+  - PyPI total installs (full lifetime) + 30-day window   [no auth]
+  - Hugging Face model downloads (DeepVRegulome)           [no auth]
+  - DNABERT-2 foundation-model lineage downloads           [no auth]
+  - GitHub stars / forks                                   [no auth]
+  - GA4 total portal users + page views                    [service acct]
 
-GA4 read-back needs a service-account block in secrets ([ga.credentials]
-+ property_id). If absent, the GA4 section is skipped silently; the rest
-of the panel still works with zero credentials.
+The country chart still renders automatically IF GA4 ever returns real
+geo-resolved rows (e.g. if the portal is later moved off Streamlit
+Community Cloud). If not, that section is simply omitted: no warning,
+no empty map, no apology text.
 
 Usage in Home.py:
     from community_engagement import render_community_engagement
@@ -129,12 +131,11 @@ def fetch_github_stats(repo: str) -> dict:
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_ga4():
     """
-    Returns a dict with GA4 portal metrics, or None if not configured.
+    Returns GA4 portal metrics, or None if not configured.
 
-    total_users / page_views are valid immediately (they do not depend on
-    geo). countries_df may be mostly "(not set)" until client-side gtag.js
-    propagates; the renderer handles that case explicitly rather than
-    showing an empty map.
+    total_users / page_views are reliable. Country rows are included only
+    if GA4 actually returns geo-resolved data; "(not set)" rows are
+    filtered out so the renderer can decide to simply omit the section.
     """
     try:
         if "ga" not in st.secrets:
@@ -155,11 +156,12 @@ def fetch_ga4():
         client = BetaAnalyticsDataClient(credentials=creds)
         pid = ga["property_id"]
 
-        # Totals (no geo dependency) -> valid right now.
         totals_req = RunReportRequest(
             property=f"properties/{pid}",
-            metrics=[Metric(name="totalUsers"), Metric(name="screenPageViews")],
-            date_ranges=[DateRange(start_date="2024-01-01", end_date="today")],
+            metrics=[Metric(name="totalUsers"),
+                     Metric(name="screenPageViews")],
+            date_ranges=[DateRange(start_date="2024-01-01",
+                                   end_date="today")],
         )
         tr = client.run_report(totals_req)
         total_users = page_views = 0
@@ -167,12 +169,12 @@ def fetch_ga4():
             total_users = int(tr.rows[0].metric_values[0].value)
             page_views = int(tr.rows[0].metric_values[1].value)
 
-        # Country breakdown.
         ctry_req = RunReportRequest(
             property=f"properties/{pid}",
             dimensions=[Dimension(name="country")],
             metrics=[Metric(name="totalUsers")],
-            date_ranges=[DateRange(start_date="2024-01-01", end_date="today")],
+            date_ranges=[DateRange(start_date="2024-01-01",
+                                   end_date="today")],
         )
         cr = client.run_report(ctry_req)
         rows = [
@@ -183,15 +185,15 @@ def fetch_ga4():
         cdf = pd.DataFrame(rows) if rows else pd.DataFrame(
             columns=["Country", "Visitors"]
         )
-        # Real (geo-resolved) rows = anything not "(not set)".
-        resolved = cdf[cdf["Country"] != "(not set)"] if not cdf.empty \
-            else cdf
+        resolved = (
+            cdf[(cdf["Country"] != "(not set)") & (cdf["Country"] != "")]
+            if not cdf.empty else cdf
+        )
 
         return {
             "ok": True,
             "total_users": total_users,
             "page_views": page_views,
-            "countries_all": cdf,
             "countries_resolved": resolved,
             "n_countries_resolved": int(resolved["Country"].nunique())
             if not resolved.empty else 0,
@@ -208,7 +210,7 @@ def render_community_engagement():
     st.header("🌎 Community Engagement & Adoption")
     st.caption(
         "Live DeepVRegulome adoption across PyPI, Hugging Face, GitHub, and "
-        f"the portal (Google Analytics). Refreshed hourly · "
+        f"the interactive portal. Refreshed hourly · "
         f"{datetime.date.today().isoformat()}."
     )
 
@@ -236,17 +238,28 @@ def render_community_engagement():
             f"{pypi['last_month']:,}" if pypi["ok"] else "—",
         )
     with c3:
-        st.metric(
-            "Hugging Face downloads (30d)",
-            f"{hf['downloads']:,}" if hf["ok"] else "—",
-            help=f"Model: {HF_MODEL}",
-        )
+        # Prefer GA4 portal users here (strong, reliable). Fall back to
+        # HF downloads if GA4 is not configured.
+        if ga and ga.get("ok"):
+            st.metric("Portal users (all time)",
+                      f"{ga['total_users']:,}")
+        else:
+            st.metric(
+                "Hugging Face downloads (30d)",
+                f"{hf['downloads']:,}" if hf["ok"] else "—",
+                help=f"Model: {HF_MODEL}",
+            )
     with c4:
-        st.metric(
-            "GitHub stars",
-            f"{gh['stars']:,}" if gh["ok"] else "—",
-            help=f"{GITHUB_REPO} · {gh['forks']} forks" if gh["ok"] else None,
-        )
+        if ga and ga.get("ok"):
+            st.metric("Portal page views (all time)",
+                      f"{ga['page_views']:,}")
+        else:
+            st.metric(
+                "GitHub stars",
+                f"{gh['stars']:,}" if gh["ok"] else "—",
+                help=f"{GITHUB_REPO} · {gh['forks']} forks"
+                if gh["ok"] else None,
+            )
 
     if pypi["ok"] and pypi.get("first_date"):
         st.caption(
@@ -254,6 +267,23 @@ def render_community_engagement():
             f"{pypi['last_date']} (the package's full lifetime; published "
             "March 2026)."
         )
+
+    # ---- Secondary metrics row (HF + GitHub) when GA4 took the top row ----
+    if ga and ga.get("ok"):
+        s1, s2 = st.columns(2)
+        with s1:
+            st.metric(
+                "Hugging Face downloads (30d)",
+                f"{hf['downloads']:,}" if hf["ok"] else "—",
+                help=f"Model: {HF_MODEL}",
+            )
+        with s2:
+            st.metric(
+                "GitHub stars",
+                f"{gh['stars']:,}" if gh["ok"] else "—",
+                help=f"{GITHUB_REPO} · {gh['forks']} forks"
+                if gh["ok"] else None,
+            )
 
     # ---- Foundation-model lineage ----
     lin = fetch_hf_model(HF_LINEAGE)
@@ -266,49 +296,34 @@ def render_community_engagement():
             icon="🧬",
         )
 
-    # ---- GA4 portal usage ----
-    if ga and ga.get("ok"):
-        st.markdown("### Portal usage (Google Analytics)")
-        g1, g2 = st.columns(2)
-        with g1:
-            st.metric("Portal users (all time)", f"{ga['total_users']:,}")
-        with g2:
-            st.metric("Page views (all time)", f"{ga['page_views']:,}")
-
-        n_resolved = ga["n_countries_resolved"]
+    # ---- Country chart: shown ONLY if GA4 actually returned real geo ----
+    # On Streamlit Community Cloud this is normally empty, so nothing is
+    # rendered here (no warning, no empty map). It will appear on its own
+    # if the portal is ever served from a host that passes client IPs.
+    if ga and ga.get("ok") and ga["n_countries_resolved"] > 0:
         resolved = ga["countries_resolved"]
-        if n_resolved > 0 and not resolved.empty:
-            st.markdown(f"**Geographic reach: {n_resolved} countries**")
-            top = resolved.nlargest(8, "Visitors")
-            try:
-                import plotly.express as px
+        st.markdown(
+            f"**Geographic reach: {ga['n_countries_resolved']} countries**"
+        )
+        top = resolved.nlargest(8, "Visitors")
+        try:
+            import plotly.express as px
 
-                fig = px.bar(
-                    top.sort_values("Visitors"),
-                    x="Visitors", y="Country", orientation="h",
-                    text="Visitors",
-                )
-                fig.update_traces(marker_color="#009E73",
-                                   textposition="outside")
-                fig.update_layout(
-                    showlegend=False,
-                    margin=dict(l=10, r=10, t=10, b=10),
-                    yaxis_title=None,
-                    height=160 + 34 * len(top),
-                )
-                st.plotly_chart(fig, use_container_width=True)
-            except Exception:
-                st.dataframe(top, use_container_width=True, hide_index=True)
-        else:
-            st.warning(
-                "Country data is not resolved yet. The portal still uses "
-                "server-side tracking, so GA4 cannot geo-locate visitors "
-                "(all show as '(not set)'). Once the client-side gtag.js "
-                "snippet has been live for a few days, this fills in "
-                "automatically. User and page-view totals above are "
-                "accurate now.",
-                icon="🌍",
+            fig = px.bar(
+                top.sort_values("Visitors"),
+                x="Visitors", y="Country", orientation="h", text="Visitors",
             )
+            fig.update_traces(marker_color="#009E73",
+                              textposition="outside")
+            fig.update_layout(
+                showlegend=False,
+                margin=dict(l=10, r=10, t=10, b=10),
+                yaxis_title=None,
+                height=160 + 34 * len(top),
+            )
+            st.plotly_chart(fig, use_container_width=True)
+        except Exception:
+            st.dataframe(top, use_container_width=True, hide_index=True)
 
     # ---- Grant / CV-ready summary ----
     bits = []
@@ -317,15 +332,15 @@ def render_community_engagement():
     if pypi["ok"]:
         bits.append(f"{pypi['last_month']:,} PyPI installs in the trailing "
                      "30 days")
-    if hf["ok"] and hf["downloads"]:
-        bits.append(f"{hf['downloads']:,} Hugging Face downloads (30d)")
-    if gh["ok"]:
-        bits.append(f"{gh['stars']:,} GitHub stars")
     if ga and ga.get("ok"):
-        bits.append(f"{ga['total_users']:,} portal users / "
+        bits.append(f"{ga['total_users']:,} portal users and "
                      f"{ga['page_views']:,} page views")
         if ga["n_countries_resolved"] > 0:
-            bits.append(f"reaching {ga['n_countries_resolved']} countries")
+            bits.append(f"across {ga['n_countries_resolved']} countries")
+    if hf["ok"] and hf["downloads"]:
+        bits.append(f"{hf['downloads']:,} Hugging Face downloads (30d)")
+    if gh["ok"] and gh["stars"]:
+        bits.append(f"{gh['stars']:,} GitHub stars")
     if bits:
         with st.expander("📋 Copy adoption summary (for grants / CV)"):
             st.code(
