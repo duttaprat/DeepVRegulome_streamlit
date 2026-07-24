@@ -106,6 +106,17 @@ st.markdown("""
 st.title("🧬DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
 st.subheader("Welcome to the interactive data portal for **DeepVRegulome**, an interactive platform for exploring the functional impact of genomic variants.")
 
+# --- Quick Links Row ---
+link_col1, link_col2, link_col3, link_col4 = st.columns(4)
+with link_col1:
+    st.link_button("📦 PyPI Package", "https://pypi.org/project/deepvregulome/", use_container_width=True)
+with link_col2:
+    st.link_button("🤗 Models", "https://huggingface.co/duttaprat/DeepVRegulome", use_container_width=True)
+with link_col3:
+    st.link_button("🚀 Live Demo (Space)", "https://huggingface.co/spaces/duttaprat/DeepVRegulome", use_container_width=True)
+with link_col4:
+    st.link_button("💻 GitHub", "https://github.com/DavuluriLab/DeepVRegulome", use_container_width=True)
+
 st.divider()
 # --- Introduction and User Guidance ---
 #col1, col2 = st.columns(2, gap="large")
