@@ -103,7 +103,7 @@ st.markdown("""
 
 # --- Main Page Content ---
 # Title of the app
-st.title("🧬DeepVRegulome: DNABERT-based deep-learning framework for predicting the functional impact of short genomic variants on the human regulome")
+st.title("🧬DeepVRegulome: DNABERT-based framework for predicting the functional impact of short genomic variants on the human regulome")
 st.subheader("Welcome to the interactive data portal for **DeepVRegulome**, an interactive platform for exploring the functional impact of genomic variants.")
 
 # --- Quick Links Row ---
