@@ -4,7 +4,7 @@ community_engagement.py
 Community Engagement panel for the DeepVRegulome portal.
 
 LAYOUT:
-  Row 1 (3 tiles): PyPI installs (total) | Portal users | Portal page views
+  Row 1 (3 tiles): PyPI installs (dual: all-time + human-only) | Portal users | Portal page views
   Row 2 (2 tiles): Hugging Face downloads (30d) | Citations
   Then: DNABERT-2 foundation-model lineage callout.
 
@@ -76,6 +76,7 @@ def _get(url, params=None):
 # ---------------------------------------------------------------------------
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_pypi_total(package: str) -> dict:
+    """Fetch filtered download count from pypistats (excludes bots/CI/mirrors)."""
     out = {"ok": False, "total": 0, "version": None,
            "first_date": None, "last_date": None, "status": ""}
     r, err = _get(
@@ -104,6 +105,25 @@ def fetch_pypi_total(package: str) -> dict:
             out["version"] = rv.json()["info"]["version"]
         except Exception:
             pass
+    return out
+
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def fetch_pepy_total(package: str) -> dict:
+    """Fetch all-time total from pepy.tech (includes CI/mirror traffic).
+    This matches the badge shown on GitHub and HuggingFace."""
+    out = {"ok": False, "total": 0, "status": ""}
+    r, err = _get(f"https://api.pepy.tech/api/v2/projects/{package}")
+    if r is None:
+        out["status"] = f"pepy.tech failed: {err}"
+        return out
+    try:
+        data = r.json()
+        out["total"] = data.get("total_downloads", 0)
+        out["ok"] = True
+        out["status"] = "ok"
+    except Exception as e:
+        out["status"] = f"pepy.tech parse error: {e}"
     return out
 
 
@@ -182,6 +202,7 @@ def _diagnostics_enabled() -> bool:
     except Exception:
         return False
 
+
 def adoption_card(icon, title, value, subtitle, accent):
     st.markdown(
         f"""
@@ -198,6 +219,33 @@ def adoption_card(icon, title, value, subtitle, accent):
     )
 
 
+def dual_metric_card(icon, title, val_a, label_a, val_b, label_b, subtitle):
+    """Render a single card with two side-by-side metrics separated by a divider."""
+    st.markdown(
+        f"""
+        <div class="adoption-card-dual">
+            <div class="adoption-top">
+                <div class="adoption-icon">{icon}</div>
+                <div class="adoption-title">{title}</div>
+            </div>
+            <div class="dual-metric-row">
+                <div class="dual-metric-half">
+                    <div class="dual-metric-value">{val_a}</div>
+                    <div class="dual-metric-label">{label_a}</div>
+                </div>
+                <div class="dual-metric-divider"></div>
+                <div class="dual-metric-half">
+                    <div class="dual-metric-value">{val_b}</div>
+                    <div class="dual-metric-label">{label_b}</div>
+                </div>
+            </div>
+            <div class="adoption-subtitle" style="margin-top:10px;">{subtitle}</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+
+
 def render_community_engagement():
     st.divider()
     st.header("🌎 Community Engagement & Adoption")
@@ -208,6 +256,7 @@ def render_community_engagement():
     )
 
     pypi = fetch_pypi_total(PYPI_PACKAGE)
+    pepy = fetch_pepy_total(PYPI_PACKAGE)
     hf = fetch_hf_downloads(HF_MODEL)
     ga = fetch_ga4_totals()
 
@@ -274,23 +323,95 @@ def render_community_engagement():
                 margin-bottom: 14px;
             }
         }
+
+        .adoption-card-dual {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fbff 100%);
+            border: 1px solid #e5e7eb;
+            border-left: 6px solid #6366f1;
+            border-radius: 20px;
+            padding: 20px 22px;
+            min-height: 155px;
+            box-shadow: 0 8px 24px rgba(15, 23, 42, 0.07);
+            transition: all 0.2s ease-in-out;
+        }
+
+        .adoption-card-dual:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 14px 32px rgba(15, 23, 42, 0.13);
+        }
+
+        .adoption-card-dual .adoption-top {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .adoption-card-dual .adoption-icon {
+            width: 38px;
+            height: 38px;
+            border-radius: 12px;
+            background: rgba(15, 23, 42, 0.05);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 21px;
+        }
+
+        .adoption-card-dual .adoption-title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #334155;
+            line-height: 1.2;
+        }
+
+        .dual-metric-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 16px;
+        }
+
+        .dual-metric-half {
+            flex: 1;
+        }
+
+        .dual-metric-value {
+            font-size: 28px;
+            font-weight: 850;
+            color: #0f172a;
+            letter-spacing: -0.5px;
+            margin-bottom: 2px;
+        }
+
+        .dual-metric-label {
+            font-size: 11.5px;
+            color: #64748b;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .dual-metric-divider {
+            width: 1px;
+            background: #e5e7eb;
+            margin: 4px 0;
+        }
         </style>
         """,
         unsafe_allow_html=True,
     )
 
-
-    
-
     # ---- Row 1 ----
     r1c1, r1c2, r1c3 = st.columns(3)
     with r1c1:
-        adoption_card(
+        dual_metric_card(
             icon="📦",
             title="PyPI Downloads",
-            value=f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
-            subtitle="Total package downloads",
-            accent="#6366f1",
+            val_a=f"{pepy['total']:,}" if pepy["ok"] else "—",
+            label_a="🌐 All Traffic",
+            val_b=f"{pypi['total']:,}" if pypi["ok"] and pypi["total"] else "—",
+            label_b="🎯 Human Only",
+            subtitle="All traffic includes CI/mirrors; human only excludes automated downloads",
         )
     with r1c2:
         adoption_card(
@@ -300,7 +421,6 @@ def render_community_engagement():
             subtitle="Unique visitors tracked by GA4",
             accent="#10b981",
         )
-
     with r1c3:
         adoption_card(
             icon="📊",
@@ -320,7 +440,6 @@ def render_community_engagement():
             subtitle="Rolling 30-day model downloads",
             accent="#ec4899",
         )
-
     with r2c2:
         adoption_card(
             icon="🎓",
@@ -332,9 +451,9 @@ def render_community_engagement():
 
     if pypi["ok"] and pypi.get("first_date"):
         st.caption(
-            f"PyPI cumulative total spans {pypi['first_date']} → "
-            f"{pypi['last_date']} (the package's full lifetime; published "
-            "March 2026)."
+            f"Human-only total spans {pypi['first_date']} → "
+            f"{pypi['last_date']} (pypistats rolling window). "
+            f"All-traffic total from pepy.tech (full package lifetime)."
         )
 
     # ---- Foundation-model lineage ----
@@ -351,7 +470,8 @@ def render_community_engagement():
     # ---- Optional diagnostics (hidden from visitors) ----
     if _diagnostics_enabled():
         with st.expander("🔧 Data source diagnostics", expanded=True):
-            st.write("**PyPI:**", pypi.get("status") or "unknown")
+            st.write("**PyPI (human only):**", pypi.get("status") or "unknown")
+            st.write("**PyPI (all traffic / pepy):**", pepy.get("status") or "unknown")
             st.write("**Hugging Face (model):**", hf.get("status"))
             st.write("**Hugging Face (lineage):**", lin.get("status"))
             st.write("**GA4 portal:**", ga.get("status"))
