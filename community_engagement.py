@@ -110,20 +110,25 @@ def fetch_pypi_total(package: str) -> dict:
 
 @st.cache_data(ttl=3600, show_spinner=False)
 def fetch_pepy_total(package: str) -> dict:
-    """Fetch all-time total from pepy.tech (includes CI/mirror traffic).
-    This matches the badge shown on GitHub and HuggingFace."""
+    """Fetch all-traffic download count from pypistats (includes bots/CI/mirrors)."""
     out = {"ok": False, "total": 0, "status": ""}
-    r, err = _get(f"https://api.pepy.tech/api/v2/projects/{package}")
+    r, err = _get(
+        f"https://pypistats.org/api/packages/{package}/overall",
+        params={"mirrors": "true"},
+    )
     if r is None:
-        out["status"] = f"pepy.tech failed: {err}"
+        out["status"] = f"pypistats (all traffic) failed: {err}"
         return out
     try:
-        data = r.json()
-        out["total"] = data.get("total_downloads", 0)
-        out["ok"] = True
-        out["status"] = "ok"
+        series = r.json().get("data", [])
+        if series:
+            out["total"] = sum(x["downloads"] for x in series)
+            out["ok"] = True
+            out["status"] = "ok"
+        else:
+            out["status"] = "pypistats returned no data rows"
     except Exception as e:
-        out["status"] = f"pepy.tech parse error: {e}"
+        out["status"] = f"pypistats parse error: {e}"
     return out
 
 
